@@ -1,0 +1,17 @@
+El primer numero semilla en generar una secuencia no uniforme
+es el 3 en un ciclo de 200 números, esto se descubrió utilizando
+el algoritmo/ codigo:
+
+	gen = None
+		i = 0
+			prueba = None
+				seguir = True
+				
+					while seguir:
+							gen = Generador(i)
+									gen.ciclo(300)
+											prueba = PruebaPromedio(gen.get_generacion())
+													seguir = prueba.probar(0.05)
+															if seguir == False:
+																		print(i)
+																				i +=
