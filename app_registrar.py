@@ -10,7 +10,7 @@ class Registrar:
         self.mensaje = nombre
     
     def mostrar_nombre(self):
-        print("el nombre fue: {}".format(self.nombre))
+        print("el nombre fue: {}".format(self.mensaje))
 
 if __name__ == '__main__': #si se corre directamente en consola
     reg = Registrar()

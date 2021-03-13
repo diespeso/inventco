@@ -1,14 +1,14 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk #importar cosas que vaya a utilizar de tkinter, a veces
+                        #necesitarán importar aparte otras cosas como messageboxes
 
-from interfaz.ventana import *
+from interfaz.ventana import * #importar modulo de la ventana
 
-#from appRegistrar import Registrar
-#
 #este es un ejemplo, deben separar la funcionalidad del apartado grafico
 #yo generalmente primero programo "un motor" que hace todo lo que necesito sin gui
 #y luego lo importo para usarlo conectando entrys de la interfaz a atributos
 # del objeto. haganlo asi, muy recomendado.
+from app_registrar import Registrar
 
 #valores de espacio entre entradas y labels 
 #estos son valores de estilo que elegi cuando hice la app, pueden solo copiarlos y pegarlos
@@ -52,7 +52,7 @@ class InterfazAppRegistrar(Frame):
         #si el constructor no necesita datos, entonces hacer el objeto de una
         #vez
         #self.registrar = None #el constructor necesita datos
-        #self.registrar = Registrar() # el constructor no necesita datos
+        self.registrar = Registrar() # el constructor no necesita datos
 
         #OBLIGATORIO DEFINIR ESTA FUNCION DONDE SE CREARAN TODOS LOS COMPONENTES GRAFICOS
         self.init_interfaz()
@@ -90,6 +90,4 @@ class InterfazAppRegistrar(Frame):
         #de producto
         self.nombre_producto = self.entry_nombre_producto.get()
         #lo imprimimos en consola
-        print(self.nombre_producto)
-        pass #aqui deberia ir el codigo que use las variables de este modulo
-        #para realizar procesos cuando se haga click en btn_registrar
+        
