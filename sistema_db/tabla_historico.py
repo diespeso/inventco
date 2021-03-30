@@ -1,3 +1,7 @@
+import sys
+sys.path.append("..") # Adds higher directory to python modules path.
+from inventco import utils
+
 from .db_productos import sistema
 
 class TablaHistorico:
@@ -48,15 +52,19 @@ class TablaHistorico:
                 print('anio: {}'.format(anio))
                 print('mes: {}'.format(utils.to_mes(j)))
                 print('demanda: {}'.format(demanda))
+
                 sistema.cursor.execute(
-                    "INSERT INTO historico VALUES('{}', {}, '{}', {});".format(
-                        self.producto,
-                        anio,
-                        utils.to_mes(j),
-                        demanda
+                    """UPDATE historico SET
+                    demanda = {} WHERE
+                    nombre_producto = '{}' 
+                    AND anio = {}
+                    AND mes = '{}';
+                    """.format(
+                        demanda, producto, anio, utils.to_mes(j)
                     )
                 )
-        sistema.connection.commit()
+                sistema.connection.commit()
+        
 
     def is_complete(self):
         for i in range(0, 3):
