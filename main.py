@@ -17,8 +17,12 @@ def main():
 		datos["tamano"] = int(sys.argv[5])
 
 	root = Tk() #el holder de la gui
+	s = ttk.Style(root)
+	#s.theme_use('xpnative')
 	root.geometry("868x600") # tamanio de la ventana
+	
 	app = Ventana(root) # ventana es una clase en el folder interfaz, estoy haciendo una instancia.
+	
 	root.mainloop() # correr la gui
 
 if __name__ == '__main__':

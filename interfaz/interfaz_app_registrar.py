@@ -10,6 +10,11 @@ from interfaz.ventana import * #importar modulo de la ventana
 # del objeto. haganlo asi, muy recomendado.
 from app_registrar import Registrar
 
+from sistema_db import db_productos;
+from sistema_db.db_productos import sistema;
+
+import json
+
 #valores de espacio entre entradas y labels 
 #estos son valores de estilo que elegi cuando hice la app, pueden solo copiarlos y pegarlos
 p_x = 3
@@ -17,6 +22,7 @@ p_y = 3
 p_x_l = 10 #p_x largos
 p_y_l = 10
 w = 10
+
 
 class InterfazAppRegistrar(Frame):
     #hacer que tu pestaña herede de Frame
@@ -32,6 +38,7 @@ class InterfazAppRegistrar(Frame):
         self.costo_pedido = 0.0
         self.costo_faltante = 0.0
         self.costo_inventario = 0.0 #costo por tenerlo en el inventario
+        self.inventario_inicial = 0
         self.punto_reorden = 0
         self.cantidad_ordenar = 0
 
@@ -42,6 +49,7 @@ class InterfazAppRegistrar(Frame):
         self.entry_costo_pedido = None
         self.entry_costo_faltante = None
         self.entry_costo_inventario = None
+        self.entry_inventario_inicial = None
         self.entry_punto_reorden = None
         self.entry_cantidad_ordenar = None 
 
@@ -52,7 +60,7 @@ class InterfazAppRegistrar(Frame):
         #si el constructor no necesita datos, entonces hacer el objeto de una
         #vez
         #self.registrar = None #el constructor necesita datos
-        self.registrar = Registrar() # el constructor no necesita datos
+        self.mt_registrar = Registrar() # el constructor no necesita datos
 
         #OBLIGATORIO DEFINIR ESTA FUNCION DONDE SE CREARAN TODOS LOS COMPONENTES GRAFICOS
         self.init_interfaz()
@@ -71,23 +79,81 @@ class InterfazAppRegistrar(Frame):
         #que se de click en el boton, esta funcion debe aceptar solo self como argumento
         self.btn_registrar = ttk.Button(self, text="Registrar", command=self.registrar)
         #luego de crearlo debemos ponerlo en la pestaña
-        self.btn_registrar.grid(column=1, row=3)
+        self.btn_registrar.grid(column=2, row=10)
 
     def add_labels(self):
         #recomiendo poner en orden las labels y recordar
         #que primero es label y a su derecha una entrada
         #esta label esta en (1,2), su entry debe estar en (2,2)
-        ttk.Label(self, text="Nombre:").grid(
-            column = 1, row = 2, padx = p_x_l, pady = p_y)
+        ttk.Label(self, text="Nombre del producto:").grid(
+            column = 1, row = 2, padx = p_x_l, pady = p_y
+        )
+        ttk.Label(self, text="Costo por pedido:").grid(
+            column = 1, row = 3, padx = p_x_l, pady = p_y
+        )
+        ttk.Label(self, text ="Costo por faltante:").grid(
+            column = 1, row = 4, padx = p_x_l, pady = p_y
+        )
+        ttk.Label(self, text="Costo de almacén:").grid(
+            column = 1, row = 5, padx = p_x_l, pady = p_y
+        )
+        ttk.Label(self, text="Inventario actual:").grid(
+            column = 1, row = 6, padx = p_x_l, pady = p_y
+        )
+
+        ttk.Label(self, text="Cantidad por orden:").grid(
+            column = 1, row = 8, padx = p_x_l, pady = p_y
+        )
+        ttk.Label(self, text="Punto de reorden:").grid(
+            column = 1, row = 9, padx = p_x_l, pady = p_y
+        )
     
     def add_entradas(self):
         #hacer la entrada, w esta declarada hasta arriba en este archivo
-        self.entry_nombre_producto = ttk.Entry(self, width=w) 
+        self.entry_nombre_producto = ttk.Entry(self, width=w*2) 
         self.entry_nombre_producto.grid(column = 2, row = 2, padx = p_x_l, pady = p_y)
+        
+        self.entry_costo_pedido = ttk.Entry(self, width=w)
+        self.entry_costo_pedido.grid(column = 2, row = 3, padx = p_x_l, pady = p_y)
+
+        self.entry_costo_faltante = ttk.Entry(self, width=w)
+        self.entry_costo_faltante.grid(column = 2, row = 4, padx = p_x_l, pady = p_y)
+
+        self.entry_costo_inventario = ttk.Entry(self, width=w)
+        self.entry_costo_inventario.grid(column = 2, row = 5, padx = p_x_l, pady = p_y)
+
+        self.entry_inventario_inicial = ttk.Entry(self, width=w)
+        self.entry_inventario_inicial.grid(column =2, row = 6, padx = p_x_l, pady = p_y)
+
+        self.entry_cantidad_ordenar = ttk.Entry(self, width=w)
+        self.entry_cantidad_ordenar.grid(column = 2, row = 8, padx = p_x_l, pady = p_y)
+
+        self.entry_punto_reorden = ttk.Entry(self, width=w)
+        self.entry_punto_reorden.grid(column = 2, row = 9, padx = p_x_l, pady = p_y)
     
     def registrar(self):
-        #ejemplo: tomamos el valor que se haya introducido en la entrada de nombre
-        #de producto
-        self.nombre_producto = self.entry_nombre_producto.get()
-        #lo imprimimos en consola
+        entradas = self.validar_entradas()
+        j = json.dumps(entradas)
+        sistema.registrar_producto(j)
+        #almacenar
+
         
+    def validar_entradas(self):
+        captura = {}
+        try:
+            captura["nombre"] = self.entry_nombre_producto.get()
+            captura["costo_pedido"] = float(self.entry_costo_pedido.get())
+            captura["costo_faltante"] = float(self.entry_costo_faltante.get())
+            captura["costo_inventario"] = float(self.entry_costo_inventario.get())
+            captura["inventario_inicial"] = int(self.entry_inventario_inicial.get())
+            captura["cantidad_orden"] = int(self.entry_cantidad_ordenar.get())
+            captura["punto_reorden"] = int(self.entry_punto_reorden.get())
+        except Exception as e:
+            messagebox.showwarning(message="Revise que los datos del producto sean correctos.", title="Error al leer los datos")
+            print(e)
+            return None
+        self.set_nombre_producto(captura['nombre'])
+        return captura
+    def set_nombre_producto(self, nombre):
+        self.nombre_producto = nombre
+        self.master.nombre_producto = nombre

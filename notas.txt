@@ -1,14 +1,8 @@
-El primer número semilla que produce una serie no uniforme es el 3
-cuando se pide generar 200 números.
-
-Se desarrolló un algoritmo para esta comprobación (ver normal.py)
-
-nota para el futuro: sería interesante programar la prueba de la frecuencia
-para observar cual es la tendencia que hace la prueba fallé
-
-La secuencia generada por la semilla 3 con 200 numeros da un
-z0 = 2.69, muy por encima de límite de 1.96 para un grado de tolerancia
-alfa igual a %5
-Se podría mejorar la precisión de los límites de los intervalos en la prueba de la frecuencia
-https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/entry.html
-https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/entry.html
+json de un producto
+{"nombre": "salchichas",
+"costo_pedido": 1.54,
+"costo_faltante": 2.5,
+"costo_inventario": 1.0,
+"inventario_inicial": 100,
+"cantidad_orden": 120,
+	"punto_reorden": 100}

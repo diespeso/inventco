@@ -1,0 +1,40 @@
+create table producto(
+  nombre text not null,
+  costo_pedido real not null,
+  costo_faltante real not null,
+  costo_inventario real not null,
+  inv_inicial numeric not null,
+  grafica blob,
+  primary key (nombre)
+);
+
+create table prediccion(
+  nombre_producto text not null,
+  mes text not null,
+  demanda numeric,
+  primary key (nombre_producto, mes),
+  foreign key (nombre_producto) references producto(nombre)
+);
+
+create table experimento(
+  nombre_producto text not null,
+  no_experimento numeric not null,
+  punto_reorden numeric not null,
+  cantidad_orden numeric not null,
+  primary key (nombre_producto, no_experimento),
+  foreign key (nombre_producto) references producto(nombre)
+);
+
+create table simulacion(
+  nombre_producto text not null,
+  no_experimento numeric not null,
+  mes text not null,
+  inv_inicial numeric not null,
+  inv_final numeric not null,
+  faltante numeric,
+  orden numeric,
+  primary key (nombre_producto, no_experimento, mes),
+  foreign key (nombre_producto) references producto(nombre),
+  foreign key (no_experimento) references experimento(no_experimento),
+  foreign key (mes) references prediccion(mes)
+);		
