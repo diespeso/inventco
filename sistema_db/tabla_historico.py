@@ -1,5 +1,4 @@
 from .db_productos import sistema
-import utils
 
 class TablaHistorico:
 

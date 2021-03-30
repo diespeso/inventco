@@ -1,6 +1,10 @@
 import json
 import sqlite3 as sql
 
+import sys
+sys.path.append("..") # Adds higher directory to python modules path.
+from inventco import utils
+
 NT_PRODUCTOS = 'producto' #nombre tabla productos
 NT_PRODUCTO_X_PREDICCION = 'producto_x_prediccion'
 NT_PREDICCION = 'prediccion'
@@ -85,10 +89,25 @@ class SistemaProductos:
 
         """toma una cadena json representando el producto y lo registra en la bd"""
         datos = json.loads(json_producto)
+
+        existe = self.cursor.execute("select * from producto where nombre = '{}';".format(
+            datos['nombre']
+        ))
+        if self.cursor.fetchone():
+            print('producto ya registrado')
+            return
+        self.registrar_en_producto(datos)
+        self.registrar_en_experimento(datos)
+        self.registrar_en_historico(datos)
+        self.connection.commit()
+
+    def registrar_en_producto(self, datos_producto):
+        datos = datos_producto
+        """toma un diccionario ya procesado desde json y registra el producto en la bd producto"""
         #el ultimo elemento: grafica_prediccion no esta disponible hasta 
         #despues de simular
         self.cursor.execute(
-            "INSERT INTO producto VALUES('{}', {}, {}, {}, {}, null);".format(
+           "INSERT INTO producto VALUES('{}', {}, {}, {}, {}, null);".format(
                 datos['nombre'],
                 datos['costo_pedido'],
                 datos['costo_faltante'],
@@ -96,6 +115,9 @@ class SistemaProductos:
                 datos['inventario_inicial']
             )
         )
+    
+    def registrar_en_experimento(self, datos_producto):
+        datos = datos_producto
         #cuando se registra el producto se registra el experimento 0: el original
         self.cursor.execute(
             "INSERT INTO experimento VALUES ('{}', 0, {}, {});".format(
@@ -104,8 +126,19 @@ class SistemaProductos:
                 datos['cantidad_orden'],
             )
         )
-        self.connection.commit()
-    
+
+    def registrar_en_historico(self, datos_producto):
+        datos = datos_producto
+        for anio in range(1, 4):
+            for mes in range(1, 13):
+                self.cursor.execute(
+                    "INSERT INTO historico VALUES('{}', {}, '{}', null);".format(
+                        datos['nombre'],
+                        anio,
+                        utils.to_mes(mes)
+                    )
+                )
+
     def buscar_demandas_producto(self, producto):
         pass
 
@@ -127,7 +160,7 @@ if __name__ == '__main__':
     
     sistema.cursor.execute('select * from experimento;')
     r2 = sistema.cursor.fetchall()
-    print('simulacion')
+    print('experimento')
     for row in r2:
         print(row)
 
