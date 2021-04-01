@@ -1,3 +1,4 @@
+from tkinter import messagebox
 import sys
 sys.path.append("..") # Adds higher directory to python modules path.
 from inventco import utils
@@ -37,36 +38,46 @@ class TablaHistorico:
 
         print("demandas: {}", self.demandas)
 
-        for anio in range(1, 4):
-            for j in range(1, 13):
-                demanda = self.demandas[anio - 1][j - 1]
-                if demanda == '':
-                    demanda = 'null'
-                else:
-                    demanda = int(demanda)
-                    #insertar o mas bien cambiar, mejor cambiar
-                    #hacer que se inserten los valores al registrar el product
-                    #y aqui solo modificarlos de null a un valor verdadero
-                    
-                print('producto: {}'.format(self.producto))
-                print('anio: {}'.format(anio))
-                print('mes: {}'.format(utils.to_mes(j)))
-                print('demanda: {}'.format(demanda))
+        try:
+            for anio in range(1, 4):
+                for j in range(1, 13):
+                    demanda = self.demandas[anio - 1][j - 1]
+                    if demanda == '':
+                        demanda = 'null'
+                    else:
+                        demanda = int(demanda)
+                        #insertar o mas bien cambiar, mejor cambiar
+                        #hacer que se inserten los valores al registrar el product
+                        #y aqui solo modificarlos de null a un valor verdadero
+                        
+                    print('producto: {}'.format(self.producto))
+                    print('anio: {}'.format(anio))
+                    print('mes: {}'.format(utils.to_mes(j)))
+                    print('demanda: {}'.format(demanda))
 
-                sistema.cursor.execute(
-                    """UPDATE historico SET
-                    demanda = {} WHERE
-                    nombre_producto = '{}' 
-                    AND anio = {}
-                    AND mes = '{}';
-                    """.format(
-                        demanda, producto, anio, utils.to_mes(j)
+                    sistema.cursor.execute(
+                        """UPDATE historico SET
+                        demanda = {} WHERE
+                        nombre_producto = '{}' 
+                        AND anio = {}
+                        AND mes = '{}';
+                        """.format(
+                            demanda, producto, anio, utils.to_mes(j)
+                        )
                     )
-                )
-                sistema.connection.commit()
+        except Exception:
+            messagebox.showerror(message='Error en los datos, revisa que sean válidos', title='Error en las demandas')
+            return
+        sistema.connection.commit()#solo si todo salio bien
         
-
+    def update_from_bd(self):
+        #updates the demanda table from the bd if it exists
+        #if exists
+        #put from db
+        pass
     def is_complete(self):
+        #TODO
+        #self.demandas = 
         for i in range(0, 3):
             for j in range(1, 13):
                 try: #no puede estar vacio
