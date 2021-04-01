@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 
 from interfaz.ventana import * 
 
@@ -9,6 +10,7 @@ from sistema_db import db_productos
 from sistema_db import tabla_historico
 
 from utils import MESES
+from utils import try_parse_demanda_entry
 
 #valores de espacio entre entradas y labels 
 #estos son valores de estilo que elegi cuando hice la app, pueden solo copiarlos y pegarlos
@@ -39,6 +41,7 @@ class InterfazAppAlimentar(Frame):
         self.lbl_encontrado = None
 
         self.btn_alimentar = None
+        self.btn_guardar = None
 
         self.init_interfaz()
 
@@ -48,6 +51,9 @@ class InterfazAppAlimentar(Frame):
 
         self.btn_alimentar = ttk.Button(self, text="Alimentar", command=self.alimentar)
         self.btn_alimentar.grid(column = 2, row=14)
+
+        self.btn_guardar = ttk.Button(self, text="Guardar", command=self.guardar)
+        self.btn_guardar.grid(column = 3, row = 14)
 
     def add_anios(self):
         #anio uno
@@ -102,24 +108,61 @@ class InterfazAppAlimentar(Frame):
         #cargar demanda del producto
     
     def alimentar(self):
-        demandas = []
+        demandas = self.revisar_y_advertir()
         
+        if demandas != None:
+            t = tabla_historico.TablaHistorico()
+            t.from_tabla(demandas)
+            #t.set_nombre_producto(self.master.nombre_producto)
+            t.to_db(self.master.nombre_producto)
+    
+    def revisar_y_advertir(self):
+        """revisa todas las entradas de demanda y si encuentra alguna que no pueda
+        convertir a null o a un entero, entonces manda un messagebox, y aparte muestra
+        en rojo la entry exacta donde está el error
+        
+        si todo sale bien, regresa una array 2D con las demandas sean numeros o nulls"""
+        demandas = []
+        flag_error = False
+
         demandas.append([])
         for i in range(0, len(self.entries_anio_uno)):
-            demandas[0].append(self.entries_anio_uno[i].get())
-        
+            demanda = try_parse_demanda_entry(self.entries_anio_uno[i])
+            if demanda == None: #dato invalido
+                #colorear rojo
+                self.entries_anio_uno[i].configure(foreground="#ff0000")
+                flag_error = True
+            else:
+                self.entries_anio_uno[i].configure(foreground='#000000')
+                demandas[0].append(demanda)
+
         demandas.append([])
         for i in range(0, len(self.entries_anio_dos)):
-            demandas[1].append(self.entries_anio_dos[i].get())
+            demanda = try_parse_demanda_entry(self.entries_anio_dos[i])
+            if demanda == None:
+                self.entries_anio_dos[i].configure(foreground="#ff0000")
+                flag_error = True
+            else:
+                self.entries_anio_dos[i].configure(foreground="#000000")
+                demandas[1].append(demanda)
 
         demandas.append([])
         for i in range(0, len(self.entries_anio_tres)):
-            demandas[2].append(self.entries_anio_tres[i].get())
+            demanda = try_parse_demanda_entry(self.entries_anio_tres[i])
+            if demanda == None:
+                self.entries_anio_tres[i].configure(foreground="#ff0000")
+                flag_error = True
+            else:
+                self.entries_anio_tres[i].configure(foreground='#000000')
+                demandas[2].append(demanda)
+        if flag_error:
+            messagebox.showerror(message="Revise las entradas de demanda", title="Error al interpretar demandas")
+            return None #falló, no regresar la tabla de demandas
+        else:
+            return demandas
 
-        t = tabla_historico.TablaHistorico()
-        t.from_tabla(demandas)
-        #t.set_nombre_producto(self.master.nombre_producto)
-        t.to_db(self.master.nombre_producto)
+    def guardar(self):
+        pass
 
 
             
