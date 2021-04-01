@@ -24,7 +24,8 @@ class InterfazAppAlimentar(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
         self.master = master
-
+        #se inicializa con el producto que estaba en registrar, podria ser none
+        #si no se registro o si estaba duplicado
         self.nombre_producto = None
 
         self.lista_demandas = []
@@ -114,7 +115,11 @@ class InterfazAppAlimentar(Frame):
             t = tabla_historico.TablaHistorico()
             t.from_tabla(demandas)
             #t.set_nombre_producto(self.master.nombre_producto)
-            t.to_db(self.master.nombre_producto)
+            self.nombre_producto = tabla_historico.sistema.producto_actual
+            if self.nombre_producto == None:
+                messagebox.showerror(message="No se pueden editar las demandas", title='Producto no encontrado o no editable')
+                return
+            t.to_db(self.nombre_producto)
     
     def revisar_y_advertir(self):
         """revisa todas las entradas de demanda y si encuentra alguna que no pueda

@@ -1,3 +1,5 @@
+from tkinter import messagebox
+
 import json
 import sqlite3 as sql
 
@@ -13,6 +15,7 @@ class SistemaProductos:
     def __init__(self):
         self.connection = sql.connect('productos.db')
         self.cursor = self.connection.cursor()
+        self.producto_actual = None
         """self.cursor.execute(
             '''SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='producto' ''')
         if self.cursor.fetchone()[0] != 1 {
@@ -89,17 +92,12 @@ class SistemaProductos:
 
         """toma una cadena json representando el producto y lo registra en la bd"""
         datos = json.loads(json_producto)
-
-        existe = self.cursor.execute("select * from producto where nombre = '{}';".format(
-            datos['nombre']
-        ))
-        if self.cursor.fetchone():
-            print('producto ya registrado')
-            return
-        self.registrar_en_producto(datos)
-        self.registrar_en_experimento(datos)
-        self.registrar_en_historico(datos)
-        self.connection.commit()
+        
+        if self.set_producto_actual(datos['nombre']): #si es nuevo
+            self.registrar_en_producto(datos)
+            self.registrar_en_experimento(datos)
+            self.registrar_en_historico(datos)
+            self.connection.commit()
 
     def registrar_en_producto(self, datos_producto):
         datos = datos_producto
@@ -141,6 +139,19 @@ class SistemaProductos:
 
     def buscar_demandas_producto(self, producto):
         pass
+
+    def set_producto_actual(self, producto):
+        #establece el nombre del producto actual pero solo si no existia antes
+        existe = self.cursor.execute("select * from producto where nombre = '{}';".format(
+            producto
+        ))
+        if self.cursor.fetchone():
+            messagebox.showwarning(message="Este producto ya ha sido registrado", title='Producto ya registrado')
+            self.producto_actual = None
+            return False
+        else:
+            self.producto_actual = producto
+            return True
 
 
 sistema = SistemaProductos()

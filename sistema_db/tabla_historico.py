@@ -1,3 +1,5 @@
+from tkinter import messagebox
+
 import sys
 sys.path.append("..") # Adds higher directory to python modules path.
 from inventco import utils
@@ -8,10 +10,9 @@ class TablaHistorico:
 
     def __init__(self):
         self.demandas = []
-        self.producto = None
 
     def set_nombre_producto(self, producto):
-        self.producto = producto
+        return sistema.set_nombre_producto(producto)
 
 
     def from_tabla(self, tabla):
@@ -35,8 +36,10 @@ class TablaHistorico:
     def to_db(self, producto):
         #se debe garantizar que la tabla de demandas
         #ya haya sido correctamente formateada
-        self.producto = producto
-
+        """if sistema.producto_actual == None:
+            messagebox.showerror(message="No se pueden alimentar demandas a un producto ya registrado si no se está en modo de edición", title='Imposible editar')
+            return
+        """
         print("demandas: {}", self.demandas)
 
         for anio in range(1, 4):
@@ -46,7 +49,7 @@ class TablaHistorico:
                     #hacer que se inserten los valores al registrar el product
                     #y aqui solo modificarlos de null a un valor verdadero
                     
-                print('producto: {}'.format(self.producto))
+                print('producto: {}'.format(producto))
                 print('anio: {}'.format(anio))
                 print('mes: {}'.format(utils.to_mes(j)))
                 print('demanda: {}'.format(demanda))
@@ -58,7 +61,7 @@ class TablaHistorico:
                     AND anio = {}
                     AND mes = '{}';
                     """.format(
-                        demanda, producto, anio, utils.to_mes(j)
+                        demanda, sistema.producto_actual, anio, utils.to_mes(j)
                     )
                 )
                 sistema.connection.commit()

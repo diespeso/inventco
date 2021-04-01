@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk #importar cosas que vaya a utilizar de tkinter, a veces
                         #necesitarán importar aparte otras cosas como messageboxes
+from tkinter import messagebox
 
 from interfaz.ventana import * #importar modulo de la ventana
 
@@ -152,8 +153,9 @@ class InterfazAppRegistrar(Frame):
             messagebox.showwarning(message="Revise que los datos del producto sean correctos.", title="Error al leer los datos")
             print(e)
             return None
-        self.set_nombre_producto(captura['nombre'])
+        #self.set_nombre_producto(captura['nombre'])
         return captura
+
     def set_nombre_producto(self, nombre):
         self.nombre_producto = nombre
-        self.master.nombre_producto = nombre
+        #sistema.set_nombre_producto(nombre)
