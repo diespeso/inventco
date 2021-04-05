@@ -137,8 +137,9 @@ class SistemaProductos:
                     )
                 )
 
-    def buscar_demandas_producto(self, producto):
+    def buscar_historico_producto(self, producto):
         pass
+
 
     def set_producto_actual(self, producto):
         #establece el nombre del producto actual pero solo si no existia antes
@@ -152,6 +153,20 @@ class SistemaProductos:
         else:
             self.producto_actual = producto
             return True
+
+    def set_producto_actual_repetido(self, producto):
+        #para productos ya registrados
+        existe = self.cursor.execute("select * from producto where nombre = '{}';".format(
+            producto
+        ))
+        if self.cursor.fetchone():
+            self.producto_actual = producto
+            return True
+        else:
+            messagebox.showwarning(message="El producto no existe", title='Producto no encontrado')
+            self.producto_actual = None
+            return False
+
 
 
 sistema = SistemaProductos()

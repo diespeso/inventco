@@ -12,8 +12,10 @@ class TablaHistorico:
         self.demandas = []
 
     def set_nombre_producto(self, producto):
-        return sistema.set_nombre_producto(producto)
+        return sistema.set_producto_actual(producto)
 
+    def set_nombre_producto_repetido(self, producto):
+        return sistema.set_producto_actual_repetido(producto)
 
     def from_tabla(self, tabla):
         self.demandas = []
@@ -84,15 +86,25 @@ class TablaHistorico:
 
     def from_db(self, producto):
         #aun no esta terminado
-        sistema.cursor.execute(
-            "SELECT demanda FROM historico where nombre_producto = '{}';".format(producto)
-        )
-        if sistema.cursor.fetchone():
-            self.producto = producto
+
+        if self.set_nombre_producto_repetido(producto): #si ya existe
+            sistema.cursor.execute(
+            """SELECT anio, mes, demanda FROM historico where nombre_producto = '{}'
+                ORDER BY anio;""".format(producto)
+            )
             rows = sistema.cursor.fetchall()
-            for i in range(0, len(rows)):
-                print("demanda del mes {}: {}", i, rows[i])
-        else:
-            print("no encontrado")
-            return None
+            print("bd rows:", rows)
+            rows = utils.ordenar_tabla_demandas(rows)
+            print('bd rows ordenadas:', rows)
+            demandas = []
+            counter = 0
+            for i in range(0, 3):
+                demandas.append([])
+                for j in range(0, 12):
+                    demandas[i].append(rows[counter][2])
+                    counter += 1
+            self.demandas = demandas
+            print('db final:', demandas)
+            return True
+        return False
             

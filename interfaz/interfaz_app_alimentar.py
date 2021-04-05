@@ -11,6 +11,8 @@ from sistema_db import tabla_historico
 
 from utils import MESES
 from utils import try_parse_demanda_entry
+from utils import set_entry
+from utils import demanda_or_empty
 
 #valores de espacio entre entradas y labels 
 #estos son valores de estilo que elegi cuando hice la app, pueden solo copiarlos y pegarlos
@@ -90,7 +92,7 @@ class InterfazAppAlimentar(Frame):
         self.entry_busqueda.grid(
             column = 8, row = 0, padx=p_x_l, pady = p_y
         )
-        self.btn_buscar = ttk.Button(self, text="Buscar", command=self.buscar_producto)
+        self.btn_buscar = ttk.Button(self, text="Cargar", command=self.buscar_producto)
         self.btn_buscar.grid(
             column = 9, row = 0, padx = p_x_l, pady = p_y
         )
@@ -103,23 +105,20 @@ class InterfazAppAlimentar(Frame):
     def buscar_producto(self):
         producto = self.entry_busqueda.get()
         print(producto)
-        self.lbl_encontrado.config(text = 'esto')
-        t = tabla_historico.TablaHistorico().from_db(producto)
-        print("tabla t: {}".format(t))
+        th = tabla_historico.TablaHistorico()
+        if th.from_db(producto):
+            #self.lbl_encontrado.config(text = 'producto encontrado')
+            demandas = th.demandas
+            for anio in range(0, len(demandas)):
+                print("anio {}: {}".format(anio, demandas[anio]))
+            self.cargar_demandas(demandas)
+
+        #t = tabla_historico.TablaHistorico().from_db(producto)
+        #print("tabla t: {}".format(t))
         #cargar demanda del producto
     
     def alimentar(self):
-        demandas = self.revisar_y_advertir()
-        
-        if demandas != None:
-            t = tabla_historico.TablaHistorico()
-            t.from_tabla(demandas)
-            #t.set_nombre_producto(self.master.nombre_producto)
-            self.nombre_producto = tabla_historico.sistema.producto_actual
-            if self.nombre_producto == None:
-                messagebox.showerror(message="No se pueden editar las demandas", title='Producto no encontrado o no editable')
-                return
-            t.to_db(self.nombre_producto)
+        pass
     
     def revisar_y_advertir(self):
         """revisa todas las entradas de demanda y si encuentra alguna que no pueda
@@ -167,7 +166,27 @@ class InterfazAppAlimentar(Frame):
             return demandas
 
     def guardar(self):
-        pass
+        demandas = self.revisar_y_advertir()
+        
+        if demandas != None:
+            t = tabla_historico.TablaHistorico()
+            t.from_tabla(demandas)
+            #t.set_nombre_producto(self.master.nombre_producto)
+            self.nombre_producto = tabla_historico.sistema.producto_actual
+            if self.nombre_producto == None:
+                messagebox.showerror(message="No se pueden editar las demandas", title='Producto no encontrado o no editable')
+                return
+            t.to_db(self.nombre_producto)
+
+    def cargar_demandas(self, demandas):
+        #hace lo contrario que guardar: toma una tabla de 36 demandas y la muestra en las entradas de texto
+        for i in range(0, 12):
+            set_entry(self.entries_anio_uno[i], demanda_or_empty(demandas[0][i]))
+        for i in range(0, 12):
+            set_entry(self.entries_anio_dos[i], demanda_or_empty(demandas[1][i]))
+        for i in range(0, 12):
+            set_entry(self.entries_anio_tres[i], demanda_or_empty(demandas[2][i]))
+       
 
 
             
