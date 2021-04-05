@@ -8,6 +8,7 @@ from interfaz.interfaz_app_inventario import InterfazAppInventario
 #importamos la clase pestaña que construimos
 from interfaz.interfaz_app_registrar import InterfazAppRegistrar
 from interfaz.interfaz_app_alimentar import InterfazAppAlimentar
+from interfaz.interfaz_app_simular import InterfazAppSimular
 
 
 class Ventana(Frame):
@@ -19,9 +20,10 @@ class Ventana(Frame):
 		self.nombre_producto = None
 		#declarar todas las pestañas (tabs) que contendrá esta ventana
 		self.tab_control = None #controlador que tiene las pestañas
-		self.tab_inventario = None #pestaña del inventario
+		#self.tab_inventario = None #pestaña del inventario
 		self.tab_regitrar = None
 		self.tab_alimentar = None
+		self.tab_simular = None
 
 		self.init_window() #tareas antes de mostrar ventana
 		self.tab_control.bind("<<NotebookTabChanged>>", self.configure_tab_control) #cuando cambia la pestaña, ir a esta funcion
@@ -40,7 +42,8 @@ class Ventana(Frame):
 
 	def rellenar_tabs_de_aplicacion(self):
 		#aqui se ponen las funciones que rellenan a todas las tabs a usar
-		self.rellenar_tab_inventario()
+		#self.rellenar_tab_inventario()
+		pass
 
 	def rellenar_tab_inventario(self):
 		#antes se usaba porque habia generador, ahora no hace nada
@@ -57,9 +60,12 @@ class Ventana(Frame):
 
 		self.tab_alimentar = InterfazAppAlimentar(self.tab_control)
 		self.tab_control.add(self.tab_alimentar, text="Alimentar")
+
+		self.tab_simular = InterfazAppSimular(self.tab_control)
+		self.tab_control.add(self.tab_simular, text= "Simular")
 		#se crean los objetos de las pestañas y se añaden a esta ventana
-		self.tab_inventario = InterfazAppInventario(self.tab_control) # se crea una nueva tab, en este caso es una interfazappinventario, se envia al padre que es tab_control
-		self.tab_control.add(self.tab_inventario, text="Inventarios") # se agrega a tab control la nueva tab creada y se pone su titulo "inventarios"
+		#self.tab_inventario = InterfazAppInventario(self.tab_control) # se crea una nueva tab, en este caso es una interfazappinventario, se envia al padre que es tab_control
+		#self.tab_control.add(self.tab_inventario, text="Inventarios") # se agrega a tab control la nueva tab creada y se pone su titulo "inventarios"
 		
 
 
