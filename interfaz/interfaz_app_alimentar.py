@@ -118,7 +118,16 @@ class InterfazAppAlimentar(Frame):
         #cargar demanda del producto
     
     def alimentar(self):
-        pass
+        
+        t = self.guardar()
+        if t.is_complete():
+            print("tabla completa, se puede alimentar con ella")
+            t.write_to_file(self.nombre_producto)
+        else:
+            messagebox.showerror(message="No se puede alimentar una tabla incompleta", title="Fallo al alimentar.")
+
+        #revisar si las demandas estan completas
+        #si si lo estan, alimentar y producir la simulación
     
     def revisar_y_advertir(self):
         """revisa todas las entradas de demanda y si encuentra alguna que no pueda
@@ -166,6 +175,11 @@ class InterfazAppAlimentar(Frame):
             return demandas
 
     def guardar(self):
+        """intenta guardar una tabla de demandas de la interfaz sin importar si está
+        completa o no, regresa la tabla obtenida siempre y cuando no haya habido errores
+        en parsing
+
+        """
         demandas = self.revisar_y_advertir()
         
         if demandas != None:
@@ -177,6 +191,7 @@ class InterfazAppAlimentar(Frame):
                 messagebox.showerror(message="No se pueden editar las demandas", title='Producto no encontrado o no editable')
                 return
             t.to_db(self.nombre_producto)
+        return t
 
     def cargar_demandas(self, demandas):
         #hace lo contrario que guardar: toma una tabla de 36 demandas y la muestra en las entradas de texto
