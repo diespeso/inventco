@@ -111,6 +111,7 @@ class TablaHistorico:
         return False
             
     def write_to_file(self, filename):
+        """deprecated, no usar"""
         #toma esta tabla de demandas si esta completa y la escribe
         #en un archivo con el nombre del producto
         #se asume que la tabla de este objeto está ordenada correctamente

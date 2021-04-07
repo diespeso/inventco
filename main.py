@@ -24,6 +24,10 @@ def main():
 	app = Ventana(root) # ventana es una clase en el folder interfaz, estoy haciendo una instancia.
 	
 	root.mainloop() # correr la gui
+import subprocess
 
 if __name__ == '__main__':
+	motor = "C:\\Users\\CDT\\Documents\\tec\\ingenieria de software\\inventco\\motor_prediccion.exe"
+	args = "salchichas.txt"
+	#subprocess.call([motor, args])
 	main() # solo corre main si se llamo directamente este archivo.
