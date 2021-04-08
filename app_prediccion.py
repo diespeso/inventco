@@ -1,3 +1,4 @@
+#!/usr/bin/python3.9
 import subprocess
 import os
 
@@ -20,7 +21,7 @@ class SistemaPrediccion:
             self.generar_grafica_prediccion(producto)
         else:
             raise Exception("No se puede predecir demanda de un producto con una tabla de demandas historicas vacia")
-
+        print("productos: ", self.productos)
 
     def generar_archivo_texto(self, producto):
         """genera un archivo producto.txt que contiene las demandas
@@ -51,7 +52,20 @@ class SistemaPrediccion:
         """
         if producto in self.productos:
             if os.path.exists("{}.txt".format(producto)):
+                print("removiendo .txt")
                 os.remove("{}.txt".format(producto))
             if os.path.exists("graficas\\{}.svg".format(producto)):
                 os.remove("graficas\\{}.svg".format(producto))
+                print("removiendo grafica")
+            if os.path.exists("predicciones\\{}.txt".format(producto)):
+                os.remove("predicciones\\{}.txt".format(producto))
+                print("removiendo prediccion")
             del self.productos[producto]
+
+    def clean(self):
+        print("productos:", self.productos)
+        for producto in self.productos.keys():
+            print('producto a borrar: ', producto)
+            self.eliminar_producto(producto)
+
+sistema_prediccion = SistemaPrediccion()

@@ -9,7 +9,7 @@ from interfaz.ventana import *
 from sistema_db import db_productos
 from sistema_db import tabla_historico
 
-from app_prediccion import SistemaPrediccion
+from app_prediccion import sistema_prediccion
 
 from utils import MESES
 from utils import try_parse_demanda_entry
@@ -31,8 +31,6 @@ class InterfazAppAlimentar(Frame):
         #se inicializa con el producto que estaba en registrar, podria ser none
         #si no se registro o si estaba duplicado
         self.nombre_producto = None
-
-        self.sistema_prediccion = SistemaPrediccion()
 
         self.lista_demandas = []
         self.anio_uno = []
@@ -126,7 +124,7 @@ class InterfazAppAlimentar(Frame):
         t = self.guardar()
         if t.is_complete():
             print("tabla completa, se puede alimentar con ella")
-            self.sistema_prediccion.predecir_producto(self.nombre_producto, t)
+            sistema_prediccion.predecir_producto(self.nombre_producto, t)
         else:
             messagebox.showerror(message="No se puede alimentar una tabla incompleta", title="Fallo al alimentar.")
 

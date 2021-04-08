@@ -1,6 +1,10 @@
 import json
 import sqlite3 as sql
 
+import sys
+sys.path.append("..") # Adds higher directory to python modules path.
+from inventco.app_prediccion import sistema_prediccion
+
 class db_cleaner:
     """Clase para limpiar la base de datos durante las pruebas.
     """
@@ -19,4 +23,5 @@ if __name__ == '__main__':
     cleaner.drop_table('experimento')
     cleaner.drop_table('simulacion')
     cleaner.drop_table('historico')
+    sistema_prediccion.clean()
    

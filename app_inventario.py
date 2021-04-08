@@ -2,8 +2,6 @@
 precision = 3
 
 import sys
-
-
 from distribuidor_tabla import DistribuidorDeTabla
 from parser_tablas import leer_archivo
 
