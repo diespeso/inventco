@@ -34,7 +34,7 @@ class SistemaPrediccion:
             for j in range(0, 12):
                 str_salida += str(tabla.demandas[i][j]) + ' '
         str_salida = str(str_salida[:-1])
-        f = open("{}.txt".format(producto), 'w')
+        f = open("productos/{}.txt".format(producto), 'w')
         f.write(str_salida)
         f.close()
         print('archivo {}.txt escrito'.format(producto))
