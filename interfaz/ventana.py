@@ -37,6 +37,13 @@ class Ventana(Frame):
 		#self.pack(fill=BOTH, expand=1)
 
 	def configure_tab_control(self, event):
+		print(self.tab_control.tab(self.tab_control.select(), "text"))
+		if self.tab_control.tab(self.tab_control.select(), "text") == "Registrar":
+			pass
+		elif self.tab_control.tab(self.tab_control.select(), "text") == "Alimentar":
+			pass
+		elif self.tab_control.tab(self.tab_control.select(), "text") == "Simular":
+			self.tab_simular.correr()
 		self.rellenar_tabs_de_aplicacion()	
 
 

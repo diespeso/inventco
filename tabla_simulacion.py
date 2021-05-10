@@ -29,7 +29,6 @@ class TablaSimulacion:
                         if self.tabla[i - 1]['orden'] != None:
                             suma_orden = self.cantidad_orden - self.tabla[i - 1]['faltante']
                             #lo que se recibe del pedido menos el faltante anterior
-                            print("suma orden:", suma_orden)
                             if suma_orden < 0:
                                 inicial = 0
                                 suma_faltante = abs(suma_orden)
@@ -38,7 +37,7 @@ class TablaSimulacion:
                                 suma_faltante = 0
                         
 
-                demanda = self.predicciones[i]
+                demanda = self.predicciones[i]['demanda']
                 final_temp = inicial - demanda
                 if final_temp < 0:
                     faltante = abs(final_temp) + suma_faltante
@@ -70,6 +69,10 @@ class TablaSimulacion:
                 renglon['orden']
             )
         return result
+
+    def get_renglon(self, index):
+        return self.tabla[index]
+
 
     def calcular_costos(self, c_pedido, c_faltante, c_inventario):
         if self.is_complete():

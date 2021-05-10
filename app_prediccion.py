@@ -1,8 +1,17 @@
 #!/usr/bin/python3.9
 import subprocess
 import os
+import sys
+sys.path.append("..") # Adds higher directory to python modules path.
+#from sistema_db.db_productos import sistema
+from inventco.sistema_db.db_productos import sistema
 
 class SistemaPrediccion:
+    """Esta clase toma las demandas generadas por la pestaña alimentar y se las manda
+    al ejecutable del motor de predicción escrito en Rust, este ejecutable entonces
+    escribe las predicciones en una archivo txt, para que despues esta clase haga
+    que el administrador de bd guarde las predicciones, hay 12 predicciones por cada
+    producto"""
     #TODO: PONER LOS ARCHIVOS .TXT DE DEMANDA EN UNA CARPETA
     def __init__(self):
         """toma objetos tipo tabla_historico y genera predicciones a partir de ellos"""
@@ -23,6 +32,15 @@ class SistemaPrediccion:
             raise Exception("No se puede predecir demanda de un producto con una tabla de demandas historicas vacia")
         print("productos: ", self.productos)
 
+    def leer_y_registrar_prediccion(self, producto):
+        f = open("predicciones/{}.txt".format(producto), 'r')
+        #el ultimo elemento es un espacio en blanco
+        nums = []
+        for num in f.read().split(' ')[:-1]:
+            nums.append(int(num))
+        print("leyendo predicciones/{}.txt:".format(producto), nums)
+        sistema.registrar_predicciones(producto, nums)
+        
     def generar_archivo_texto(self, producto):
         """genera un archivo producto.txt que contiene las demandas
         formateadas para ser pasadas al motor de predicción forust

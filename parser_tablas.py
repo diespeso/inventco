@@ -1,4 +1,5 @@
 #!/usr/bin/python3.9
+#clase del proyecto pasado
 
 from pathlib import Path
 from distribuidor_tabla import DistribuidorDeTabla

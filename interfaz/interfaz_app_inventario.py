@@ -1,4 +1,5 @@
 #!/usr/bin/python3.9
+#ESTA CLASE ES DEL PROYECTO ANTERIOR
 
 from tkinter import *
 from tkinter import ttk

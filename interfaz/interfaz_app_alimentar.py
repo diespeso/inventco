@@ -8,8 +8,10 @@ from interfaz.ventana import *
 
 from sistema_db import db_productos
 from sistema_db import tabla_historico
+from sistema_db.db_productos import sistema
 
 from app_prediccion import sistema_prediccion
+from motor_experimentos import MotorExperimentos
 
 from utils import MESES
 from utils import try_parse_demanda_entry
@@ -106,7 +108,9 @@ class InterfazAppAlimentar(Frame):
 
     def buscar_producto(self):
         producto = self.entry_busqueda.get()
+        self.master.nombre_producto = producto #establecer que ahora estaremos trabajando con este producto
         print(producto)
+        print("master:", self.master.nombre_producto)
         th = tabla_historico.TablaHistorico()
         if th.from_db(producto):
             #self.lbl_encontrado.config(text = 'producto encontrado')
@@ -114,17 +118,35 @@ class InterfazAppAlimentar(Frame):
             for anio in range(0, len(demandas)):
                 print("anio {}: {}".format(anio, demandas[anio]))
             self.cargar_demandas(demandas)
+        #leer archivo prediccion
+        """f = open("predicciones/{}.txt".format(self.master.nombre_producto), 'r')
+        str_file = f.read()
+        str_file = str_file.split(' ')[:-1]
+        pred = []
+        for st in str_file:
+            pred.append(int(st))
+        print(pred)"""
 
-        #t = tabla_historico.TablaHistorico().from_db(producto)
-        #print("tabla t: {}".format(t))
-        #cargar demanda del producto
+    def registrar_experimentos(self, nombre_producto):
+        dic = sistema.get_producto(nombre_producto)
+        ex = sistema.get_experimento(nombre_producto, 0) #el original
+        print('producto desde sql:', dic)
+        motor = MotorExperimentos(ex['cantidad_orden'], ex['punto_reorden'], dic['inv_inicial'], sistema.get_predicciones(nombre_producto))
+        print(motor.get_actual())
+        motor.to_bd(nombre_producto)
+        
     
     def alimentar(self):
+        """triggerea la predicción y con ello el llenar la ventana de simulación"""
         
         t = self.guardar()
         if t.is_complete():
             print("tabla completa, se puede alimentar con ella")
             sistema_prediccion.predecir_producto(self.nombre_producto, t)
+            sistema_prediccion.leer_y_registrar_prediccion(self.nombre_producto)
+
+            self.master.nombre_producto = self.nombre_producto
+            self.registrar_experimentos(self.master.nombre_producto)
         else:
             messagebox.showerror(message="No se puede alimentar una tabla incompleta", title="Fallo al alimentar.")
 
@@ -189,6 +211,7 @@ class InterfazAppAlimentar(Frame):
             t.from_tabla(demandas)
             #t.set_nombre_producto(self.master.nombre_producto)
             self.nombre_producto = tabla_historico.sistema.producto_actual
+            self.master.nombre_producto = self.nombre_producto
             if self.nombre_producto == None:
                 messagebox.showerror(message="No se pueden editar las demandas", title='Producto no encontrado o no editable')
                 return

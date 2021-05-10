@@ -5,12 +5,6 @@ from tkinter import messagebox
 
 from interfaz.ventana import * #importar modulo de la ventana
 
-#este es un ejemplo, deben separar la funcionalidad del apartado grafico
-#yo generalmente primero programo "un motor" que hace todo lo que necesito sin gui
-#y luego lo importo para usarlo conectando entrys de la interfaz a atributos
-# del objeto. haganlo asi, muy recomendado.
-from app_registrar import Registrar
-
 from sistema_db import db_productos;
 from sistema_db.db_productos import sistema;
 
@@ -55,13 +49,6 @@ class InterfazAppRegistrar(Frame):
         self.entry_cantidad_ordenar = None 
 
         self.btn_registrar = None
-
-        #definir los componentes que harán el trabajo de procesamiento de los
-        #datos, osea el motor que se haya programado,
-        #si el constructor no necesita datos, entonces hacer el objeto de una
-        #vez
-        #self.registrar = None #el constructor necesita datos
-        self.mt_registrar = Registrar() # el constructor no necesita datos
 
         #OBLIGATORIO DEFINIR ESTA FUNCION DONDE SE CREARAN TODOS LOS COMPONENTES GRAFICOS
         self.init_interfaz()
@@ -136,6 +123,7 @@ class InterfazAppRegistrar(Frame):
         entradas = self.validar_entradas()
         j = json.dumps(entradas)
         sistema.registrar_producto(j)
+        self.master.nombre_producto = self.nombre_producto
         #almacenar
 
         

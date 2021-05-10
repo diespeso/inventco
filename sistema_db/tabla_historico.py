@@ -12,6 +12,7 @@ class TablaHistorico:
         self.demandas = []
 
     def set_nombre_producto(self, producto):
+        """Actualiza el nombre del producto en el sistema a este, actual"""
         return sistema.set_producto_actual(producto)
 
     def set_nombre_producto_repetido(self, producto):

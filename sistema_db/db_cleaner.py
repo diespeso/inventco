@@ -15,8 +15,7 @@ class db_cleaner:
     def drop_table(self, table_name):
         self.cursor.execute('DROP TABLE IF EXISTS {};'.format(table_name))
 
-
-if __name__ == '__main__':
+def main():
     cleaner = db_cleaner()
     cleaner.drop_table('producto')
     cleaner.drop_table('prediccion')
@@ -24,4 +23,7 @@ if __name__ == '__main__':
     cleaner.drop_table('simulacion')
     cleaner.drop_table('historico')
     sistema_prediccion.clean()
+
+if __name__ == '__main__':
+    main()
    

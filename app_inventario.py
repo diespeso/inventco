@@ -1,5 +1,6 @@
 #!/usr/bin/python3.9
 precision = 3
+#clase del proyecto anterior
 
 import sys
 from distribuidor_tabla import DistribuidorDeTabla

@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+#clase del proyecto pasado
 
 import math
 from scipy import stats
