@@ -9,6 +9,7 @@ from interfaz.interfaz_app_inventario import InterfazAppInventario
 from interfaz.interfaz_app_registrar import InterfazAppRegistrar
 from interfaz.interfaz_app_alimentar import InterfazAppAlimentar
 from interfaz.interfaz_app_simular import InterfazAppSimular
+from interfaz.interfaz_app_resultados import InterfazAppResultados
 
 
 class Ventana(Frame):
@@ -24,6 +25,7 @@ class Ventana(Frame):
 		self.tab_regitrar = None
 		self.tab_alimentar = None
 		self.tab_simular = None
+		self.tab_resultados = None
 
 		self.init_window() #tareas antes de mostrar ventana
 		self.tab_control.bind("<<NotebookTabChanged>>", self.configure_tab_control) #cuando cambia la pestaña, ir a esta funcion
@@ -44,6 +46,8 @@ class Ventana(Frame):
 			pass
 		elif self.tab_control.tab(self.tab_control.select(), "text") == "Simular":
 			self.tab_simular.correr()
+		#elif self.tab_control.tab(self.tab_control.select(), "text") == "Resultados":
+		#	pass
 		self.rellenar_tabs_de_aplicacion()	
 
 
@@ -73,7 +77,8 @@ class Ventana(Frame):
 		#se crean los objetos de las pestañas y se añaden a esta ventana
 		#self.tab_inventario = InterfazAppInventario(self.tab_control) # se crea una nueva tab, en este caso es una interfazappinventario, se envia al padre que es tab_control
 		#self.tab_control.add(self.tab_inventario, text="Inventarios") # se agrega a tab control la nueva tab creada y se pone su titulo "inventarios"
-		
+		self.tab_resultados = InterfazAppResultados(self.tab_control)
+		self.tab_control.add(self.tab_resultados, text = "Resultados")
 
 
 		self.tab_control.grid(column= 1, row = 1) #todas las tabs aparecen empezando en la col 1, fila 1.

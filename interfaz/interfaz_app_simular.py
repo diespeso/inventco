@@ -7,7 +7,7 @@ from interfaz.ventana import *
 from utils import MESES
 import utils
 
-from sistema_db.db_productos import sistema;
+from sistema_db.db_productos import sistema
 
 #valores de espacio entre entradas y labels 
 #estos son valores de estilo que elegi cuando hice la app, pueden solo copiarlos y pegarlos
@@ -32,11 +32,12 @@ class InterfazAppSimular(Frame):
         self.exps = []
         self.c_exps = 0
 
-        self.lbl_counter = ttk.Label(self, text="uwu")
+        self.lbl_counter = ttk.Label(self, text="0/9")
         self.lbl_counter.grid(column = 3, row = 14, padx = p_x_l, pady = p_y)
 
         self.entry_q = None
         self.entry_r = None
+        self.entry_costo = None
 
         self.init_interfaz()
 
@@ -59,6 +60,9 @@ class InterfazAppSimular(Frame):
         self.entry_r.grid(column = 7, row = 2, padx = p_x_l, pady = p_y)
         ttk.Label(self, text="R:").grid(column = 6, row = 2, padx = p_x_l, pady = p_y)
 
+        ttk.Label(self, text="Costo Total:").grid(column = 6, row = 3, padx = p_x_l, pady = p_y)
+        self.entry_costo = ttk.Entry(self, width=w)
+        self.entry_costo.grid(column = 7, row = 3, padx = p_x_l, pady = p_y)
     def correr(self):
         self.simulaciones = sistema.get_simulacion_ordenada(self.master.nombre_producto) #depende de que interfaz_app_alimentar inicialice self.master.nombre_producto
         for i in range(0, 9):

@@ -39,11 +39,11 @@ def make_query(table_name, cols, query):
     e imprime el resultado del query"""
     str_query = None
     if query == None:
-       str_query = "select {} from {};".format(cols, table_name)
+       str_query = "SELECT {} FROM {};".format(cols, table_name)
     else:
-        str_query = "select {} from {} {};".format(cols, table_name, query)
+        str_query = "SELECT {} FROM {} {};".format(cols, table_name, query)
     print(">>>ejecutando: ", str_query)
-    sistema.cursor.execute(str_query);
+    sistema.cursor.execute(str_query)
     for row in sistema.cursor.fetchall():
         print(row)
 
@@ -60,8 +60,29 @@ if __name__ == '__main__':
     test = DbTester()
     #test.in_producto(gen_producto("salchichas3", 0.15, 0.16, 0.17, 100))
     #test.in_producto(gen_producto("salchichas4", 0.17, 0.18, 0.19, 110))
-    test.sel_producto("*", None)
-    test.sel_producto("nombre", "where inventario_inicial = 89")
-    test.sel_prediccion("*", "inner join producto on producto.nombre = prediccion.nombre_producto")
-    test.sel_simulacion("simulacion.inv_final", "inner join producto on producto.nombre = simulacion.nombre_producto")
-    test.sel_simulacion("*", None)
+    #test.sel_producto("*", None)
+    #test.sel_producto("nombre", "where inventario_inicial = 89")
+    #test.sel_prediccion("*", "inner join producto on producto.nombre = prediccion.nombre_producto")
+    #test.sel_simulacion("simulacion.inv_final", "inner join producto on producto.nombre = simulacion.nombre_producto")
+    #test.sel_simulacion("*", None)
+    test.sel_producto('*', None) #consulta general de productos
+    test.sel_producto('producto.nombre, historico.anio, historico.mes, historico.demanda',
+    """INNER JOIN historico ON producto.nombre = historico.nombre_producto WHERE producto.nombre = 'salchichas'""") #consulta general de historico para producto especifico
+    test.sel_prediccion('*', None) #consulta general de prediccion
+    test.sel_experimento('producto.nombre, experimento.numero, experimento.punto_reorden, experimento.cantidad_orden', 
+    """INNER JOIN producto ON producto.nombre = experimento.nombre_producto WHERE experimento.numero = 0""") #consulta especifica en experimento y los productos relacionados
+    #nota con esto: un producto tiene n experimentos, no al revés, así que consultar un experimento especifico mostrará ese experimento para todos los productos
+    
+    test.sel_simulacion("""simulacion.nombre_producto, simulacion.no_experimento, simulacion.mes, simulacion.inv_inicial, simulacion.faltante, simulacion.orden,
+    experimento.numero, experimento.punto_reorden, experimento.cantidad_orden, prediccion.demanda""",
+    """INNER JOIN experimento ON simulacion.nombre_producto = experimento.nombre_producto AND simulacion.no_experimento = experimento.numero
+    INNER JOIN prediccion ON simulacion.nombre_producto = prediccion.nombre_producto AND simulacion.mes = prediccion.mes
+    """) #consulta general de simulaciones, predicciones, experimento, productos relacionados
+    #las predicciones son las mismas siempre, para todos los experimentos, estas no cambian porque son producto del historico
+    
+    test.sel_simulacion("""simulacion.nombre_producto, simulacion.no_experimento, simulacion.mes, simulacion.inv_inicial, simulacion.faltante, simulacion.orden, experimento.punto_reorden,
+    experimento.cantidad_orden, prediccion.demanda""",
+    """INNER JOIN experimento ON simulacion.nombre_producto = experimento.nombre_producto
+    INNER JOIN prediccion ON simulacion.nombre_producto = prediccion.nombre_producto
+    WHERE simulacion.nombre_producto = 'salchichas' AND simulacion.no_experimento = 2 AND simulacion.mes = 'Octubre'""")
+

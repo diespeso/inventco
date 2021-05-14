@@ -1,0 +1,52 @@
+SELECT * FROM producto; -- consulta general de productos
+
+SELECT producto.nombre, historico.anio, historico.mes, historico.demanda
+FROM producto
+INNER JOIN historico ON producto.nombre = historico.nombre_producto
+WHERE producto.nombre = 'salchichas'; -- consulta general de historico para producto especifico
+
+SELECT * FROM prediccion; -- consulta general de predicciones
+
+SELECT producto.nombre, experimento.numero, experimento.punto_reorden, experimento.cantidad_orden
+FROM experimento
+INNER JOIN producto ON producto.nombre = experimento.nombre_producto WHERE experimento.numero = 0;
+-- consulta especifica en experimento y los productos relacionados
+-- nota con esto: un producto tiene n experimentos, no al revés, así que consultar un experimento especifico mostrará ese experimento para todos los productos
+
+SELECT simulacion.nombre_producto, simulacion.no_experimento, simulacion.mes, simulacion.inv_inicial,
+simulacion.faltante, simulacion.orden, experimento.numero, experimento.punto_reorden,
+experimento.cantidad_orden, prediccion.demanda
+FROM simulacion
+INNER JOIN experimento ON simulacion.nombre_producto = experimento.nombre_producto
+    AND simulacion.no_experimento = experimento.numero
+INNER JOIN prediccion ON simulacion.nombre_producto = prediccion.nombre_producto
+    AND simulacion.mes = prediccion.mes;
+-- consulta general de simulaciones, predicciones, experimento, productos relacionados
+-- nota: las predicciones son las mismas siempre, para todos los experimentos, estas no cambian porque son producto del historico
+-- nota: deberian ser 108: osea 9 simulaciones de 12 meses cada una
+
+SELECT simulacion.nombre_producto, simulacion.no_experimento, simulacion.mes, simulacion.inv_inicial, simulacion.faltante, simulacion.orden, experimento.punto_reorden,
+experimento.cantidad_orden, prediccion.demanda
+FROM simulacion
+INNER JOIN experimento ON simulacion.nombre_producto = experimento.nombre_producto
+INNER JOIN prediccion ON simulacion.nombre_producto = prediccion.nombre_producto
+WHERE simulacion.nombre_producto = 'salchichas'
+    AND simulacion.no_experimento = 2
+    AND simulacion.mes = 'Octubre';
+-- CONSULTA ESPECIFICA DE SIMULACION DE UN SOLO PRODUCTO RELACIONADO, A QUE EXPERIMENTO PERTENECE Y SOBRE QUE PREDICCION TRABAJA
+
+INSERT INTO producto values('Papitas', 70, 10, 11, 100);
+INSERT INTO producto values('Frijoles en lata', 110, 20, 10, 70);
+INSERT INTO producto values('Helado LALA', 300, 40, 100, 20);
+INSERT INTO producto values('Cacahuates Mariana', 70, 100, 11, 10);
+INSERT INTO producto values('Totopos Totis', 170, 10, 20, 40);
+INSERT INTO producto values('Bombones', 30, 110, 111, 10);
+INSERT INTO producto values('Pechuga de pollo', 470, 110, 121, 80);
+INSERT INTO producto values('Chile verde', 40, 100, 111, 10);
+INSERT INTO producto values('Pepitas', 10, 10, 11, 10);
+
+SELECT * FROM producto;
+SELECT * FROM historico;
+SELECT * FROM prediccion;
+SELECT * FROM experimento;
+SELECT * FROM simulacion;

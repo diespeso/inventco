@@ -353,6 +353,6 @@ if __name__ == '__main__':
         print(row)
 
     print("simimi")
-    print(sistema.get_simulacion('ewes'))
-    print(sistema.get_experimento('ewes', 1))
+    print(sistema.get_simulacion('salchichas'))
+    print(sistema.get_experimento('salchichas', 1))
     

@@ -3,6 +3,8 @@
 from tkinter import *
 from tkinter import ttk
 
+from ttkthemes import ThemedTk
+
 import sys
 from interfaz.ventana import Ventana
 
@@ -16,13 +18,11 @@ def main():
 		datos["modulo"] = int(sys.argv[4])
 		datos["tamano"] = int(sys.argv[5])
 
-	root = Tk() #el holder de la gui
-	s = ttk.Style(root)
-	#s.theme_use('xpnative')
+	#root = Tk() #el holder de la gui
+	root = ThemedTk(theme='adapta')
 	root.geometry("868x600") # tamanio de la ventana
 	
 	app = Ventana(root) # ventana es una clase en el folder interfaz, estoy haciendo una instancia.
-	
 	root.mainloop() # correr la gui
 import subprocess
 
