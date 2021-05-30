@@ -92,3 +92,5 @@ if __name__ == '__main__':
     """INNER JOIN producto ON producto.nombre = experimento.nombre_producto
     WHERE producto.nombre = 'nada'""")
 
+    test.sel_producto("producto.nombre", None)
+

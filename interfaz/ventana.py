@@ -20,7 +20,7 @@ class Ventana(Frame):
 	def __init__(self, master=None): #constructor de la ventana
 		Frame.__init__(self, master)
 		self.master = master
-
+		"""
 		ventana = Toplevel()
 		ventana.geometry("800x400")
 		ventana.title("Serie de tiempo de Salchichas")
@@ -29,6 +29,7 @@ class Ventana(Frame):
 		label = Label(ventana, image=image)
 		label.image = image
 		label.grid(column = 0, row = 0)
+		"""
 		self.nombre_producto = None
 		#declarar todas las pestañas (tabs) que contendrá esta ventana
 		self.tab_control = None #controlador que tiene las pestañas

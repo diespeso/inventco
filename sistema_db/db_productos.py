@@ -144,7 +144,7 @@ class SistemaProductos:
             WHERE experimento.nombre_producto = '{}' AND experimento.numero = {};""".format(
                 costo, nombre_producto, no_experimeto
             ))
-        self.connection.commit();
+        self.connection.commit()
         
     def actualizar_en_experimento(self, nombre_producto, numero, punto_reorden, cantidad_orden):
         print("datos: ", nombre_producto, numero, punto_reorden, cantidad_orden)
@@ -239,6 +239,11 @@ class SistemaProductos:
         self.connection.commit()
         return db_producto_to_dic(self.cursor.fetchone())
 
+    def get_productos(self):
+        self.cursor.execute("SELECT producto.nombre FROM producto;")
+        self.connection.commit()
+        return productos_to_list(self.cursor.fetchall())
+
     def get_experimento(self, producto, numero):
         self.cursor.execute(
         """SELECT * FROM experimento
@@ -309,11 +314,17 @@ def db_producto_to_dic(producto):
     'inv_inicial': producto[4]}
     return pro
 
+def productos_to_list(productos):
+    lista = []
+    for i in range(0, len(productos)):
+        lista.append(productos[i][0])
+    return lista
+
 def db_experimento_to_dic(experimento):
     """toma un arreglo que representa un experimento extraido de la bd
     y lo convierte en un diccionario para su facil manipulacion"""
     exp = {'nombre_producto': experimento[0], 'numero': experimento[1],
-    'punto_reorden': experimento[2], 'cantidad_orden': experimento[3]}
+    'punto_reorden': experimento[2], 'cantidad_orden': experimento[3], 'costo': experimento[4]}
     return exp
 
 def db_predicciones_to_dic_array(predicciones):

@@ -90,20 +90,15 @@ class InterfazAppSimular(Frame):
         sum_faltante = 0.0
         max_pedido = 0
         for mes in range(0, len(simulacion)):
-            print("------------------costo")
             sum_inventario += simulacion[mes][5]
             sum_faltante += simulacion[mes][6]
-            print(sum_inventario)
-            print(sum_faltante)
             pedido = simulacion[mes][7]
             if pedido != None:
                 if pedido > max_pedido:
                     max_pedido = pedido
-        print(max_pedido)
         costo += sum_inventario * c_inventario
         costo += sum_faltante * c_faltante
         costo += max_pedido * c_pedido
-        print(costo)
         sistema.registrar_costo_experimento(self.master.nombre_producto, c_pedido, costo)
         self.entry_costo.insert(0, "{}".format(costo))
 
