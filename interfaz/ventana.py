@@ -2,6 +2,9 @@
 
 from tkinter import ttk
 from tkinter import *
+import tksvg
+
+import os
 
 from interfaz.interfaz_app_inventario import InterfazAppInventario
 
@@ -18,6 +21,14 @@ class Ventana(Frame):
 		Frame.__init__(self, master)
 		self.master = master
 
+		ventana = Toplevel()
+		ventana.geometry("800x400")
+		ventana.title("Serie de tiempo de Salchichas")
+		print(os.path.join(os.path.dirname(__file__), 'salchichas.svg'))
+		image = tksvg.SvgImage(file=os.path.join(os.path.dirname(__file__), 'salchichas.svg'))
+		label = Label(ventana, image=image)
+		label.image = image
+		label.grid(column = 0, row = 0)
 		self.nombre_producto = None
 		#declarar todas las pestañas (tabs) que contendrá esta ventana
 		self.tab_control = None #controlador que tiene las pestañas

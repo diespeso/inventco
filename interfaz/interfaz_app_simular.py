@@ -26,7 +26,7 @@ class InterfazAppSimular(Frame):
         self.btn_siguiente = None
 
         self.renglones = []
-        self.contador = 0
+        self.contador = 0 #contador del experimento actual
 
         self.simulaciones = None
         self.exps = []
@@ -65,6 +65,7 @@ class InterfazAppSimular(Frame):
         self.entry_costo.grid(column = 7, row = 3, padx = p_x_l, pady = p_y)
     def correr(self):
         self.simulaciones = sistema.get_simulacion_ordenada(self.master.nombre_producto) #depende de que interfaz_app_alimentar inicialice self.master.nombre_producto
+       
         for i in range(0, 9):
             self.exps.append(sistema.get_experimento(self.master.nombre_producto, i))
         self.cargar_tabla()
@@ -78,6 +79,33 @@ class InterfazAppSimular(Frame):
 
         self.entry_q.insert(0, "{}".format(self.exps[self.c_exps]['cantidad_orden']))
         self.entry_r.insert(0, "{}".format(self.exps[self.c_exps]['punto_reorden']))
+        #calcular costo
+        costo = 0
+        producto = sistema.get_producto(self.master.nombre_producto)
+        c_inventario = producto['c_inventario']
+        c_faltante = producto['c_faltante']
+        c_pedido = producto['c_pedido']
+
+        sum_inventario = 0.0
+        sum_faltante = 0.0
+        max_pedido = 0
+        for mes in range(0, len(simulacion)):
+            print("------------------costo")
+            sum_inventario += simulacion[mes][5]
+            sum_faltante += simulacion[mes][6]
+            print(sum_inventario)
+            print(sum_faltante)
+            pedido = simulacion[mes][7]
+            if pedido != None:
+                if pedido > max_pedido:
+                    max_pedido = pedido
+        print(max_pedido)
+        costo += sum_inventario * c_inventario
+        costo += sum_faltante * c_faltante
+        costo += max_pedido * c_pedido
+        print(costo)
+        sistema.registrar_costo_experimento(self.master.nombre_producto, c_pedido, costo)
+        self.entry_costo.insert(0, "{}".format(costo))
 
         for mes in range(0, len(simulacion)):
             self.renglones[mes]['inicial'].insert(0, "{}".format(simulacion[mes][3]))
@@ -109,6 +137,7 @@ class InterfazAppSimular(Frame):
     def limpiar_tabla(self):
         self.entry_q.delete(0, 'end')
         self.entry_r.delete(0, 'end')
+        self.entry_costo.delete(0, 'end')
         for renglon in self.renglones:
             for llave in renglon:
                 renglon[llave].delete(0, 'end')

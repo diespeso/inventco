@@ -69,8 +69,8 @@ if __name__ == '__main__':
     test.sel_producto('producto.nombre, historico.anio, historico.mes, historico.demanda',
     """INNER JOIN historico ON producto.nombre = historico.nombre_producto WHERE producto.nombre = 'salchichas'""") #consulta general de historico para producto especifico
     test.sel_prediccion('*', None) #consulta general de prediccion
-    test.sel_experimento('producto.nombre, experimento.numero, experimento.punto_reorden, experimento.cantidad_orden', 
-    """INNER JOIN producto ON producto.nombre = experimento.nombre_producto WHERE experimento.numero = 0""") #consulta especifica en experimento y los productos relacionados
+    test.sel_experimento('producto.nombre, experimento.numero, experimento.punto_reorden, experimento.cantidad_orden, experimento.costo_total', 
+    """INNER JOIN producto ON producto.nombre = experimento.nombre_producto""") #consulta especifica en experimento y los productos relacionados
     #nota con esto: un producto tiene n experimentos, no al revés, así que consultar un experimento especifico mostrará ese experimento para todos los productos
     
     test.sel_simulacion("""simulacion.nombre_producto, simulacion.no_experimento, simulacion.mes, simulacion.inv_inicial, simulacion.faltante, simulacion.orden,
@@ -85,4 +85,10 @@ if __name__ == '__main__':
     """INNER JOIN experimento ON simulacion.nombre_producto = experimento.nombre_producto
     INNER JOIN prediccion ON simulacion.nombre_producto = prediccion.nombre_producto
     WHERE simulacion.nombre_producto = 'salchichas' AND simulacion.no_experimento = 2 AND simulacion.mes = 'Octubre'""")
+
+
+    #prueba para calcular costos
+    test.sel_experimento("experimento.punto_reorden, experimento.cantidad_orden, producto.costo_inventario",
+    """INNER JOIN producto ON producto.nombre = experimento.nombre_producto
+    WHERE producto.nombre = 'nada'""")
 

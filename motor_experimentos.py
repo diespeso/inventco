@@ -40,6 +40,9 @@ class MotorExperimentos:
                 renglon = tabla.get_renglon(m - 1) #no se busca demanda porque la demanda es de la tabla de prediccion
                 #print('renglon: ', renglon)
                 sistema.actualizar_en_simulacion(nombre_producto, i, utils.to_mes(m), renglon['inicial'], renglon['final'], renglon['faltante'], renglon['orden'])
+            producto = sistema.get_producto(nombre_producto)
+
+            sistema.registrar_costo_experimento(nombre_producto, i, self.experimentos[i].calcular_costo_total(producto['c_pedido'], producto['c_faltante'], producto['c_inventario']))
 
 def gen_combinaciones(q, r):
     """genera 8 combinaciones de q y r a ser usadas por el motor de experimentos

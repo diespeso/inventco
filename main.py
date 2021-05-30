@@ -19,8 +19,8 @@ def main():
 		datos["tamano"] = int(sys.argv[5])
 
 	#root = Tk() #el holder de la gui
-	root = ThemedTk(theme='adapta')
-	root.geometry("868x600") # tamanio de la ventana
+	root = ThemedTk(theme='clearlooks')
+	root.geometry("859x405") # tamanio de la ventana
 	
 	app = Ventana(root) # ventana es una clase en el folder interfaz, estoy haciendo una instancia.
 	root.mainloop() # correr la gui

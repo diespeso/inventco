@@ -48,6 +48,7 @@ class SistemaProductos:
                 numero NUMERIC NOT NULL,
                 punto_reorden NUMERIC NOT NULL,
                 cantidad_orden NUMERIC NOT NULL,
+                costo_total NUMERIC,
                 primary key (nombre_producto, numero),
                 foreign key (nombre_producto) REFERENCES product(nombre)
             );
@@ -124,7 +125,7 @@ class SistemaProductos:
     def registrar_en_experimento(self, nombre_producto, punto_reorden, cantidad_orden):
         #cuando se registra el producto se registra el experimento 0: el original
         self.cursor.execute(
-            "INSERT INTO experimento VALUES ('{}', 0, {}, {});".format(
+            "INSERT INTO experimento VALUES ('{}', 0, {}, {}, null);".format(
                 nombre_producto,
                 punto_reorden,
                 cantidad_orden,
@@ -132,12 +133,19 @@ class SistemaProductos:
         )
         for i in range(1, 9):
             self.cursor.execute(
-                "INSERT INTO experimento VALUES ('{}', {}, 0, 0);".format(
+                "INSERT INTO experimento VALUES ('{}', {}, 0, 0, null);".format(
                     nombre_producto, i
                 )
             )
             print("datos_reg: ", nombre_producto, punto_reorden, cantidad_orden)
 
+    def registrar_costo_experimento(self, nombre_producto, no_experimeto, costo):
+        self.cursor.execute("""UPDATE experimento SET costo_total = {}
+            WHERE experimento.nombre_producto = '{}' AND experimento.numero = {};""".format(
+                costo, nombre_producto, no_experimeto
+            ))
+        self.connection.commit();
+        
     def actualizar_en_experimento(self, nombre_producto, numero, punto_reorden, cantidad_orden):
         print("datos: ", nombre_producto, numero, punto_reorden, cantidad_orden)
         self.cursor.execute(
