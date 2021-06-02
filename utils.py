@@ -1,3 +1,5 @@
+import os
+
 MESES = [
     'Enero',
     'Febrero',
@@ -88,3 +90,10 @@ def encontrar_indice_demanda_con_mes(demandas, mes):
     for i in range(0, len(demandas)):
         if demandas[i][1] == mes:
             return i
+
+def to_dir_file_local(folder, archivo):
+    return os.path.join(
+        os.path.join(
+            os.getcwd(), folder
+        ), archivo
+    )

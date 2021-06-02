@@ -303,6 +303,22 @@ class SistemaProductos:
 
         return res
 
+    def borrar_producto(self, nombre_producto):
+        #desactivar foreign key check
+        self.cursor.execute("PRAGMA foreing_keys = OFF;")
+        self.connection.commit()
+        print('BORRANDO')
+        print(nombre_producto)
+        #borrar en cada tabla todo lo relacionado con el producto
+        self.cursor.execute("delete from historico where nombre_producto = '{}';".format(nombre_producto))
+        self.cursor.execute("delete from simulacion where nombre_producto = '{}';".format(nombre_producto))
+        self.cursor.execute("delete from prediccion where nombre_producto = '{}';".format(nombre_producto))
+        self.cursor.execute("delete from experimento where nombre_producto = '{}';".format(nombre_producto))
+        self.cursor.execute("delete from producto where nombre = '{}';".format(nombre_producto))
+        self.connection.commit()
+
+        self.cursor.execute("PRAGMA foreing_keys = OFF;")
+        self.connection.commit()
 
 sistema = SistemaProductos() #singleton i guess
 

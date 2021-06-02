@@ -58,6 +58,9 @@ class Ventana(Frame):
 			pass
 		elif self.tab_control.tab(self.tab_control.select(), "text") == "Simular":
 			self.tab_simular.correr()
+		elif self.tab_control.tab(self.tab_control.select(), 'text') == "Resultados":
+			self.tab_resultados.borrar_graficos()
+			self.tab_resultados.add_resultados()
 		#elif self.tab_control.tab(self.tab_control.select(), "text") == "Resultados":
 		#	pass
 		self.rellenar_tabs_de_aplicacion()	
