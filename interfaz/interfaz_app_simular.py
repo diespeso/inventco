@@ -63,9 +63,10 @@ class InterfazAppSimular(Frame):
         ttk.Label(self, text="Costo Total:").grid(column = 6, row = 3, padx = p_x_l, pady = p_y)
         self.entry_costo = ttk.Entry(self, width=w)
         self.entry_costo.grid(column = 7, row = 3, padx = p_x_l, pady = p_y)
+    
     def correr(self):
+        self.exps = []
         self.simulaciones = sistema.get_simulacion_ordenada(self.master.nombre_producto) #depende de que interfaz_app_alimentar inicialice self.master.nombre_producto
-       
         for i in range(0, 9):
             self.exps.append(sistema.get_experimento(self.master.nombre_producto, i))
         self.cargar_tabla()
@@ -75,7 +76,6 @@ class InterfazAppSimular(Frame):
         self.limpiar_tabla()
         self.lbl_counter.config(text='{}/9'.format(self.c_exps + 1))
         simulacion = self.simulaciones[self.contador]
-        print(simulacion)
 
         self.entry_q.insert(0, "{}".format(self.exps[self.c_exps]['cantidad_orden']))
         self.entry_r.insert(0, "{}".format(self.exps[self.c_exps]['punto_reorden']))

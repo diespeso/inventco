@@ -20,7 +20,7 @@ def main():
 
 	#root = Tk() #el holder de la gui
 	root = ThemedTk(theme='clearlooks')
-	root.geometry("859x405") # tamanio de la ventana
+	root.geometry("690x405") # tamanio de la ventana
 	
 	app = Ventana(root) # ventana es una clase en el folder interfaz, estoy haciendo una instancia.
 	root.mainloop() # correr la gui

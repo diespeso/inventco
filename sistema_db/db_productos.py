@@ -137,7 +137,6 @@ class SistemaProductos:
                     nombre_producto, i
                 )
             )
-            print("datos_reg: ", nombre_producto, punto_reorden, cantidad_orden)
 
     def registrar_costo_experimento(self, nombre_producto, no_experimeto, costo):
         self.cursor.execute("""UPDATE experimento SET costo_total = {}
@@ -273,7 +272,6 @@ class SistemaProductos:
     def get_simulacion_ordenada(self, producto):
         """Regresa un arreglo de listas con datos de la simulación, la columna demanda está incluida aunque no sea parte 
         de la tabla simular como tal"""
-        print("obtiendo sim ordenada de '{}'".format(producto))
         conjunto = self.get_simulacion(producto)
         tablas = [[]]
         cont = 1
@@ -293,11 +291,8 @@ class SistemaProductos:
         for ex in tablas: #acomodar dimension por mes
             res.append([])
             meses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            for mes in ex:
-                print(mes)
-                
+            for mes in ex:                
                 meses[utils.int_from_mes(mes[1]) - 1] = mes
-            print("")
             res[c] = meses
             c += 1
 
@@ -307,8 +302,6 @@ class SistemaProductos:
         #desactivar foreign key check
         self.cursor.execute("PRAGMA foreing_keys = OFF;")
         self.connection.commit()
-        print('BORRANDO')
-        print(nombre_producto)
         #borrar en cada tabla todo lo relacionado con el producto
         self.cursor.execute("delete from historico where nombre_producto = '{}';".format(nombre_producto))
         self.cursor.execute("delete from simulacion where nombre_producto = '{}';".format(nombre_producto))

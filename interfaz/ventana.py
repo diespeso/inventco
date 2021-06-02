@@ -6,8 +6,6 @@ import tksvg
 
 import os
 
-from interfaz.interfaz_app_inventario import InterfazAppInventario
-
 #importamos la clase pestaña que construimos
 from interfaz.interfaz_app_registrar import InterfazAppRegistrar
 from interfaz.interfaz_app_alimentar import InterfazAppAlimentar
@@ -20,16 +18,6 @@ class Ventana(Frame):
 	def __init__(self, master=None): #constructor de la ventana
 		Frame.__init__(self, master)
 		self.master = master
-		"""
-		ventana = Toplevel()
-		ventana.geometry("800x400")
-		ventana.title("Serie de tiempo de Salchichas")
-		print(os.path.join(os.path.dirname(__file__), 'salchichas.svg'))
-		image = tksvg.SvgImage(file=os.path.join(os.path.dirname(__file__), 'salchichas.svg'))
-		label = Label(ventana, image=image)
-		label.image = image
-		label.grid(column = 0, row = 0)
-		"""
 		self.nombre_producto = None
 		#declarar todas las pestañas (tabs) que contendrá esta ventana
 		self.tab_control = None #controlador que tiene las pestañas
@@ -55,7 +43,7 @@ class Ventana(Frame):
 		if self.tab_control.tab(self.tab_control.select(), "text") == "Registrar":
 			pass
 		elif self.tab_control.tab(self.tab_control.select(), "text") == "Alimentar":
-			pass
+			self.intentar_cargar_alimentacion()
 		elif self.tab_control.tab(self.tab_control.select(), "text") == "Simular":
 			self.tab_simular.correr()
 		elif self.tab_control.tab(self.tab_control.select(), 'text') == "Resultados":
@@ -65,7 +53,9 @@ class Ventana(Frame):
 		#	pass
 		self.rellenar_tabs_de_aplicacion()	
 
-
+	def intentar_cargar_alimentacion(self):
+		if self.tab_control.nombre_producto:
+			self.tab_alimentar.buscar_producto(self.tab_control.nombre_producto)
 	def rellenar_tabs_de_aplicacion(self):
 		#aqui se ponen las funciones que rellenan a todas las tabs a usar
 		#self.rellenar_tab_inventario()

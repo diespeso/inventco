@@ -43,9 +43,6 @@ class InterfazAppAlimentar(Frame):
         self.entries_anio_dos = []
         self.entries_anio_tres = []
 
-        self.entry_busqueda = None
-        self.btn_buscar = None
-        self.lbl_encontrado = None
 
         self.btn_alimentar = None
         self.btn_guardar = None
@@ -54,7 +51,6 @@ class InterfazAppAlimentar(Frame):
 
     def init_interfaz(self):
         self.add_anios()
-        self.add_ui_buscar()
 
         self.btn_alimentar = ttk.Button(self, text="Alimentar", command=self.alimentar)
         self.btn_alimentar.grid(column = 2, row=14)
@@ -62,6 +58,15 @@ class InterfazAppAlimentar(Frame):
         self.btn_guardar = ttk.Button(self, text="Guardar", command=self.guardar)
         self.btn_guardar.grid(column = 3, row = 14)
 
+
+    #todo: mejorar   
+    def buscar_producto(self, nombre_producto):
+            th = tabla_historico.TablaHistorico()
+            if th.from_db(nombre_producto):
+                #self.lbl_encontrado.config(text = 'producto encontrado')
+                demandas = th.demandas
+                self.cargar_demandas(demandas)
+                
     def add_anios(self):
         #anio uno
         self.entries_anio_uno = [] #reboot
@@ -87,52 +92,11 @@ class InterfazAppAlimentar(Frame):
             )
             self.entries_anio_tres.append(ttk.Entry(self, width=w))
             self.entries_anio_tres[mes].grid(column = 5, row = mes, padx=p_x_l, pady =p_y)
-    
-    def add_ui_buscar(self):
-        ttk.Label(self, text='Buscar producto:').grid(
-            column = 7, row = 0, padx = p_x_l, pady = p_y
-        )
-        self.entry_busqueda = ttk.Entry(self, width=w * 2)
-        self.entry_busqueda.grid(
-            column = 8, row = 0, padx=p_x_l, pady = p_y
-        )
-        self.btn_buscar = ttk.Button(self, text="Cargar", command=self.buscar_producto)
-        self.btn_buscar.grid(
-            column = 9, row = 0, padx = p_x_l, pady = p_y
-        )
-
-        self.lbl_encontrado = ttk.Label(self)
-        self.lbl_encontrado.grid(
-            column = 7, row = 1, padx = p_x_l, pady = p_y
-        )
-
-    def buscar_producto(self):
-        producto = self.entry_busqueda.get()
-        self.master.nombre_producto = producto #establecer que ahora estaremos trabajando con este producto
-        print(producto)
-        print("master:", self.master.nombre_producto)
-        th = tabla_historico.TablaHistorico()
-        if th.from_db(producto):
-            #self.lbl_encontrado.config(text = 'producto encontrado')
-            demandas = th.demandas
-            for anio in range(0, len(demandas)):
-                print("anio {}: {}".format(anio, demandas[anio]))
-            self.cargar_demandas(demandas)
-        #leer archivo prediccion
-        """f = open("predicciones/{}.txt".format(self.master.nombre_producto), 'r')
-        str_file = f.read()
-        str_file = str_file.split(' ')[:-1]
-        pred = []
-        for st in str_file:
-            pred.append(int(st))
-        print(pred)"""
 
     def registrar_experimentos(self, nombre_producto):
         dic = sistema.get_producto(nombre_producto)
         ex = sistema.get_experimento(nombre_producto, 0) #el original
-        print('producto desde sql:', dic)
         motor = MotorExperimentos(ex['cantidad_orden'], ex['punto_reorden'], dic['inv_inicial'], sistema.get_predicciones(nombre_producto))
-        print(motor.get_actual())
         motor.to_bd(nombre_producto)
         
     
@@ -141,7 +105,6 @@ class InterfazAppAlimentar(Frame):
         
         t = self.guardar()
         if t.is_complete():
-            print("tabla completa, se puede alimentar con ella")
             sistema_prediccion.predecir_producto(self.nombre_producto, t)
             sistema_prediccion.leer_y_registrar_prediccion(self.nombre_producto)
 

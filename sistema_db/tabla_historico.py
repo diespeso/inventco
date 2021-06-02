@@ -43,19 +43,12 @@ class TablaHistorico:
             messagebox.showerror(message="No se pueden alimentar demandas a un producto ya registrado si no se está en modo de edición", title='Imposible editar')
             return
         """
-        print("demandas: {}", self.demandas)
-
         for anio in range(1, 4):
             for j in range(1, 13):
                 demanda = self.demandas[anio - 1][j - 1]
                     #insertar o mas bien cambiar, mejor cambiar
                     #hacer que se inserten los valores al registrar el product
                     #y aqui solo modificarlos de null a un valor verdadero
-                    
-                print('producto: {}'.format(producto))
-                print('anio: {}'.format(anio))
-                print('mes: {}'.format(utils.to_mes(j)))
-                print('demanda: {}'.format(demanda))
 
                 sistema.cursor.execute(
                     """UPDATE historico SET
@@ -75,12 +68,10 @@ class TablaHistorico:
         #put from db
         pass
     def is_complete(self):
-        print("is complete?")
         #self.demandas = 
         for i in range(0, 3):
             for j in range(0, 12):
                 try: #no puede estar vacio
-                    print('demanda actual: ', self.demandas[i][j])
                     int(self.demandas[i][j]) #si falla en convertirla en entero
                     #entonces hay un dato vacio y no se puede considerar completa
                 except Exception: #debe de ser de 3x12
@@ -96,9 +87,7 @@ class TablaHistorico:
                 ORDER BY anio;""".format(producto)
             )
             rows = sistema.cursor.fetchall()
-            print("bd rows:", rows)
             rows = utils.ordenar_tabla_demandas(rows)
-            print('bd rows ordenadas:', rows)
             demandas = []
             counter = 0
             for i in range(0, 3):
@@ -107,7 +96,6 @@ class TablaHistorico:
                     demandas[i].append(rows[counter][2])
                     counter += 1
             self.demandas = demandas
-            print('db final:', demandas)
             return True
         return False
             
@@ -116,17 +104,14 @@ class TablaHistorico:
         #toma esta tabla de demandas si esta completa y la escribe
         #en un archivo con el nombre del producto
         #se asume que la tabla de este objeto está ordenada correctamente
-        print('escribiendo a archivo: {}.txt'.format(filename))
         if self.is_complete():
             str_salida = ""
             for i in range(0, 3):
                 for j in range(0, 12):
                     str_salida += str(self.demandas[i][j]) + ' '
             str_salida = str(str_salida[:-1])
-            print("string de salida: ", str_salida)
             f = open('{}.txt'.format(filename), 'w')
             f.write(str_salida)
             f.close()
-            print('archivo {}.txt escrito'.format(filename))
         else:
             raise Exception("Se intentó escribir a archivo una tabla de demandas incompleta")

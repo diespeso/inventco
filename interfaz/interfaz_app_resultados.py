@@ -3,6 +3,7 @@ import tksvg
 
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 
 from sistema_db.db_productos import sistema
 import utils
@@ -20,16 +21,8 @@ w = 10
 
 
 
-
-
-
-#todo: no se actualizan los resultados hasta que se cierra la ventana
-
-
-
-
-
-
+#todo: aniadir la simbologia a las graficas
+#TODO: cambiar libreria para cargar svgs
 
 
 
@@ -107,17 +100,16 @@ class InterfazAppResultados(Frame):
         ventana = Toplevel()
         ventana.geometry("800x400")
         ventana.title("Serie de tiempo de: {}".format(nombre_producto))
-        path = os.path.abspath(
-            os.path.join(
-                    os.path.join(
-                        os.getcwd(), 'graficas'),
-                    '{}.svg'.format(nombre_producto)
-                )
-            )
+        path = utils.to_dir_file_local('graficas', '{}.svg'.format(nombre_producto))
+        path_l = utils.to_dir_file_local('graficas', 'leyenda.svg')
         image = tksvg.SvgImage(file=os.path.join(os.path.dirname(__file__), path))
+        image_l = tksvg.SvgImage(file = os.path.join(os.path.dirname(__file__), path_l))
         label = Label(ventana, image=image)
+        lbl_l = Label(ventana, image=image_l)
         label.image = image
+        lbl_l.image = image_l
         label.grid(column = 0, row = 0)
+        lbl_l.grid(column = 1, row = 0)
 
     def cmd_borrar(self, index):
         #borrar de la bd el producto
@@ -128,11 +120,8 @@ class InterfazAppResultados(Frame):
         #for componente in self.resultados_ui[index]:
         #   self.resultados_ui[index][componente].destroy()
 
-        #borrar
-        #for i in range(0, len(self.resultados_ui)):
-        #    for componente in self.resultados_ui[i]:
-        #        self.resultados_ui[i][componente].destroy()
-        #borrar de bd
+        if not messagebox.askyesno('Confirmar borrado', 'Seguro que deseas borrar "{}"?'.format(nombre_producto)):
+            return
         
         sistema.borrar_producto(nombre_producto)
         self.borrar_graficos()

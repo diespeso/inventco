@@ -49,6 +49,11 @@ class InterfazAppRegistrar(Frame):
         self.entry_cantidad_ordenar = None 
 
         self.btn_registrar = None
+         
+        #busqueda
+        self.entry_busqueda = None
+        self.btn_buscar = None
+        self.lbl_encontrado = None
 
         #OBLIGATORIO DEFINIR ESTA FUNCION DONDE SE CREARAN TODOS LOS COMPONENTES GRAFICOS
         self.init_interfaz()
@@ -61,6 +66,7 @@ class InterfazAppRegistrar(Frame):
         #en dos funciones porque suelen ser muchas, pero ustedes decidan
         self.add_labels()
         self.add_entradas()
+        
 
         #al final establecer los botones
         #asi se crea un button, command es una funcion que se llamara cada vez
@@ -68,7 +74,33 @@ class InterfazAppRegistrar(Frame):
         self.btn_registrar = ttk.Button(self, text="Registrar", command=self.registrar)
         #luego de crearlo debemos ponerlo en la pestaña
         self.btn_registrar.grid(column=2, row=10)
+        self.add_ui_buscar()
 
+    def add_ui_buscar(self):
+        ttk.Label(self, text='Cargar producto:').grid(
+            column = 3, row = 2, padx = p_x_l, pady = p_y
+        )
+        self.entry_busqueda = ttk.Entry(self, width=w * 2)
+        self.entry_busqueda.grid(
+            column = 4, row = 2, padx=p_x_l, pady = p_y
+        )
+        self.btn_buscar = ttk.Button(self, text="Buscar", command=self.buscar_producto)
+        self.btn_buscar.grid(
+            column = 5, row = 2, padx = p_x_l, pady = p_y
+        )
+
+        self.lbl_encontrado = ttk.Label(self)
+        self.lbl_encontrado.grid(
+            column = 7, row = 3, padx = p_x_l, pady = p_y
+        )
+
+    def buscar_producto(self):
+        nombre_producto = self.entry_busqueda.get()
+        if nombre_producto in sistema.get_productos():
+            self.master.nombre_producto = nombre_producto #establecer que ahora estaremos trabajando con este producto
+            self.cargar_producto(nombre_producto)
+        else:
+            messagebox.showwarning(title = 'Producto no encontrado' ,message='Ese producto no existe')
     def add_labels(self):
         #recomiendo poner en orden las labels y recordar
         #que primero es label y a su derecha una entrada
@@ -123,10 +155,42 @@ class InterfazAppRegistrar(Frame):
         entradas = self.validar_entradas()
         j = json.dumps(entradas)
         sistema.registrar_producto(j)
+        self.nombre_producto = entradas['nombre']
         self.master.nombre_producto = self.nombre_producto
         #almacenar
 
         
+    def cargar_producto(self, nombre_producto):
+        self.limpiar_entries()
+        producto = sistema.get_producto(nombre_producto)
+        exp = sistema.get_experimento(nombre_producto, 0) #el primero es el original
+        #cargar vars
+        self.nombre_producto = producto['nombre']
+        self.costo_pedido = producto['c_pedido']
+        self.costo_faltante = producto['c_faltante']
+        self.costo_inventario = producto['c_inventario']
+        self.inv_inicial = producto['inv_inicial']
+        self.punto_reorden = exp['punto_reorden']
+        self.cantidad_ordenar = exp['cantidad_orden']
+        #cargar entries
+        self.entry_nombre_producto.insert(0, "{}".format(self.nombre_producto))
+        self.entry_costo_pedido.insert(0, "{}".format(self.costo_pedido))
+        self.entry_costo_faltante.insert(0, "{}".format(self.costo_faltante))
+        self.entry_costo_inventario.insert(0, "{}".format(self.costo_inventario))
+        self.entry_inventario_inicial.insert(0, "{}".format(self.inv_inicial))
+        self.entry_cantidad_ordenar.insert(0, "{}".format(self.cantidad_ordenar))
+        self.entry_punto_reorden.insert(0, "{}".format(self.punto_reorden))
+        
+
+    def limpiar_entries(self):
+        self.entry_nombre_producto.delete(0, 'end')
+        self.entry_costo_pedido.delete(0, 'end')
+        self.entry_costo_faltante.delete(0, 'end')
+        self.entry_costo_inventario.delete(0, 'end')
+        self.entry_inventario_inicial.delete(0, 'end')
+        self.entry_cantidad_ordenar.delete(0, 'end')
+        self.entry_punto_reorden.delete(0, 'end')
+
     def validar_entradas(self):
         captura = {}
         try:
@@ -139,7 +203,6 @@ class InterfazAppRegistrar(Frame):
             captura["punto_reorden"] = int(self.entry_punto_reorden.get())
         except Exception as e:
             messagebox.showwarning(message="Revise que los datos del producto sean correctos.", title="Error al leer los datos")
-            print(e)
             return None
         #self.set_nombre_producto(captura['nombre'])
         return captura
