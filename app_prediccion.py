@@ -2,6 +2,10 @@
 import subprocess
 import os
 import sys
+
+import utils
+
+motor_prediccion = 'motor_prediccion.exe'
 sys.path.append("..") # Adds higher directory to python modules path.
 #from sistema_db.db_productos import sistema
 from inventco.sistema_db.db_productos import sistema
@@ -16,7 +20,7 @@ class SistemaPrediccion:
     def __init__(self):
         """toma objetos tipo tabla_historico y genera predicciones a partir de ellos"""
         self.productos = {}
-        self.programa_str = "C:\\Users\\CDT\\Documents\\tec\\ingenieria de software\\inventco\\motor_prediccion.exe"
+        self.programa_str = utils.to_dir_file_local('', motor_prediccion)
         pass
 
     def predecir_producto(self, producto, tabla_historico):
@@ -33,29 +37,28 @@ class SistemaPrediccion:
         print("productos: ", self.productos)
 
     def leer_y_registrar_prediccion(self, producto):
-        f = open("predicciones/{}.txt".format(producto), 'r')
+        prediccion = utils.to_dir_file_local('predicciones', '{}.txt'.format(producto))
+        f = open(prediccion, 'r')
         #el ultimo elemento es un espacio en blanco
         nums = []
         for num in f.read().split(' ')[:-1]:
             nums.append(int(num))
-        print("leyendo predicciones/{}.txt:".format(producto), nums)
         sistema.registrar_predicciones(producto, nums)
         
     def generar_archivo_texto(self, producto):
         """genera un archivo producto.txt que contiene las demandas
         formateadas para ser pasadas al motor de predicción forust
         """
-        print("generando {}.txt...".format(producto))
         tabla = self.productos[producto]
         str_salida = ""
         for i in range(0, 3):
             for j in range(0, 12):
                 str_salida += str(tabla.demandas[i][j]) + ' '
         str_salida = str(str_salida[:-1])
-        f = open("productos/{}.txt".format(producto), 'w')
+        salida = utils.to_dir_file_local('productos', '{}.txt'.format(producto))
+        f = open(salida, 'w')
         f.write(str_salida)
         f.close()
-        print('archivo {}.txt escrito'.format(producto))
 
     def generar_grafica_prediccion(self, producto):
         """genera un archivo producto.svg en la carpeta graficas
@@ -70,20 +73,15 @@ class SistemaPrediccion:
         """
         if producto in self.productos:
             if os.path.exists("{}.txt".format(producto)):
-                print("removiendo .txt")
                 os.remove("{}.txt".format(producto))
             if os.path.exists("graficas\\{}.svg".format(producto)):
                 os.remove("graficas\\{}.svg".format(producto))
-                print("removiendo grafica")
             if os.path.exists("predicciones\\{}.txt".format(producto)):
                 os.remove("predicciones\\{}.txt".format(producto))
-                print("removiendo prediccion")
             del self.productos[producto]
 
     def clean(self):
-        print("productos:", self.productos)
         for producto in self.productos.keys():
-            print('producto a borrar: ', producto)
             self.eliminar_producto(producto)
 
 sistema_prediccion = SistemaPrediccion()

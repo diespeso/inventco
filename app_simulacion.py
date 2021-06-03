@@ -19,7 +19,6 @@ class AppSimulacion:
         
         predicciones = sistema.get_predicciones(producto)
         preds = []
-        print("q: {},r: {}".format(experimento['cantidad_orden'], experimento['punto_reorden']))
         for prediccion in predicciones:
             preds.append(prediccion['demanda'])
         return TablaSimulacion(experimento['cantidad_orden'], experimento['punto_reorden'], 
@@ -27,4 +26,3 @@ class AppSimulacion:
 
 if __name__ == '__main__':
     sim = AppSimulacion()  
-    print("simulador:", sim.simular_from_db("panecitos"))

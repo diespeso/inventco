@@ -4,10 +4,10 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\CDT\\Desktop\\simulacion'],
+             pathex=['C:\\Users\\CDT\\Documents\\tec\\ingenieria de software\\inventco'],
              binaries=[],
              datas=[],
-             hiddenimports=[],
+             hiddenimports=['tkinter', 'svglib', 'reportlab'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=False , icon='icono.ico')

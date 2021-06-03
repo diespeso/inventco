@@ -1,5 +1,4 @@
 import os
-import tksvg
 
 from tkinter import *
 from tkinter import ttk
@@ -8,6 +7,10 @@ from tkinter import messagebox
 from sistema_db.db_productos import sistema
 import utils
 
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
+from PIL import Image, ImageTk
+
 #valores de espacio entre entradas y labels 
 #estos son valores de estilo que elegi cuando hice la app, pueden solo copiarlos y pegarlos
 p_x = 3
@@ -15,19 +18,6 @@ p_y = 3
 p_x_l = 10 #p_x largos
 p_y_l = 10
 w = 10
-
-
-
-
-
-
-#todo: aniadir la simbologia a las graficas
-#TODO: cambiar libreria para cargar svgs
-
-
-
-
-
 
 
 
@@ -94,13 +84,34 @@ class InterfazAppResultados(Frame):
            for componente in self.resultados_ui[i]:
                self.resultados_ui[i][componente].destroy()
 
+
     def mostrar_grafica(self, nombre_producto):
         #enviar solo nombre sin .txt
         #nombre_producto += '.txt'
         ventana = Toplevel()
+        icono = utils.to_dir_file_local('interfaz', 'icono_prediccion.png')
+        img = PhotoImage(file=icono)
+        ventana.iconphoto(False, img)
+
         ventana.geometry("800x400")
         ventana.title("Serie de tiempo de: {}".format(nombre_producto))
+        #renderizar a PNG
+        pngs_fol = utils.to_dir_file_local('graficas', 'pngs')
         path = utils.to_dir_file_local('graficas', '{}.svg'.format(nombre_producto))
+        img = svg2rlg(path)
+        renderPM.drawToFile(img, '{}/{}.png'.format(pngs_fol, nombre_producto), fmt="PNG")
+        #cargar
+        carga = Image.open('{}/{}.png'.format(pngs_fol, nombre_producto))
+        leyenda = Image.open('{}/leyenda.png'.format(pngs_fol))
+        render = ImageTk.PhotoImage(carga)
+        ren_leyenda = ImageTk.PhotoImage(leyenda)
+        img = Label(ventana, image=render)
+        img_leyenda = Label(ventana, image=ren_leyenda)
+        img.image = render
+        img_leyenda.image = ren_leyenda
+        img.grid(column = 0, row = 0)
+        img_leyenda.grid(column = 1, row = 0)
+        """path = utils.to_dir_file_local('graficas', '{}.svg'.format(nombre_producto))
         path_l = utils.to_dir_file_local('graficas', 'leyenda.svg')
         image = tksvg.SvgImage(file=os.path.join(os.path.dirname(__file__), path))
         image_l = tksvg.SvgImage(file = os.path.join(os.path.dirname(__file__), path_l))
@@ -110,6 +121,7 @@ class InterfazAppResultados(Frame):
         lbl_l.image = image_l
         label.grid(column = 0, row = 0)
         lbl_l.grid(column = 1, row = 0)
+        """
 
     def cmd_borrar(self, index):
         #borrar de la bd el producto
@@ -134,8 +146,8 @@ class InterfazAppResultados(Frame):
         imagen = utils.to_dir_file_local('graficas', '{}.svg'.format(nombre_producto))
         predicciones = utils.to_dir_file_local('predicciones', '{}.txt'.format(nombre_producto))
         productos = utils.to_dir_file_local('productos', '{}.txt'.format(nombre_producto))
-
-        for archivo in [imagen, predicciones, productos]:
+        imagen_png = utils.to_dir_file_local('graficas/pngs', '{}.png'.format(nombre_producto))
+        for archivo in [imagen, predicciones, productos, imagen_png]:
             if os.path.exists(archivo):
                 os.remove(archivo)
 

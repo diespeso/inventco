@@ -8,6 +8,8 @@ from ttkthemes import ThemedTk
 import sys
 from interfaz.ventana import Ventana
 
+import utils
+
 def main():
 	datos = None
 	if len(sys.argv) > 1: #esto lo usaba para llamar el programa para pruebas con argumentos, no lo vamos a usar.
@@ -22,6 +24,11 @@ def main():
 	root = ThemedTk(theme='clearlooks')
 	root.geometry("690x405") # tamanio de la ventana
 	
+	#poner icono
+	icono = utils.to_dir_file_local('interfaz', 'icono.png')
+	img = PhotoImage(file=icono)
+	root.iconphoto(False, img)
+
 	app = Ventana(root) # ventana es una clase en el folder interfaz, estoy haciendo una instancia.
 	root.mainloop() # correr la gui
 import subprocess

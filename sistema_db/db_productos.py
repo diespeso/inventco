@@ -146,7 +146,6 @@ class SistemaProductos:
         self.connection.commit()
         
     def actualizar_en_experimento(self, nombre_producto, numero, punto_reorden, cantidad_orden):
-        print("datos: ", nombre_producto, numero, punto_reorden, cantidad_orden)
         self.cursor.execute(
             """UPDATE experimento SET nombre_producto = '{}',
             numero = {},
@@ -179,8 +178,6 @@ class SistemaProductos:
                 ))
     
     def actualizar_en_simulacion(self, nombre_producto, no_experimento, mes, inv_inicial, inv_final, faltante, orden):
-        #print("actualizando")
-        #print(nombre_producto, no_experimento, mes, inv_inicial, inv_final, faltante, orden)
         if orden == None:
             orden = 'null'
         self.cursor.execute("""UPDATE simulacion SET nombre_producto = '{}',

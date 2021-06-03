@@ -67,7 +67,6 @@ def ordenar_tabla_demandas(tabla):
         for j in range(0, anios):
             if tabla[i][0] == j + 1:
                 demandas[j].append(tabla[i])
-    print('tabla demandas: ', demandas)
 
     for i in range(0, anios):
         demandas[i] = ordenar_anio_demandas(demandas[i])
@@ -76,7 +75,6 @@ def ordenar_tabla_demandas(tabla):
     for anio in demandas:
         for mes in anio:
             final.append(mes)
-    print('final ordenado: ', final)
     return final
 
 def ordenar_anio_demandas(meses):
